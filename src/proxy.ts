@@ -1,45 +1,50 @@
 import { NextRequest, NextResponse } from "next/server";
 import { userService } from "./services/user.service";
-import { Roles } from "./constants/roles";
+import { UserRole } from "./constants/roles";
 
 export async function proxy(request: NextRequest) {
   const pathname = request.nextUrl.pathname;
 
-  let isAuthenticated = false;
-  let isAdmin = false;
+  try {
+    const { data } = await userService.getSession();
+    const user = data?.user;
 
-  const { data } = await userService.getSession();
+    // If no user session, redirect to login
+    if (!user) {
+      return NextResponse.redirect(new URL("/login", request.url));
+    }
 
-  if (data) {
-    isAuthenticated = true;
-    isAdmin = data.user?.role === Roles.admin;
-  }
+    const userRole = user.role;
 
-  //* User in not authenticated at all
-  if (!isAuthenticated) {
+    // Role-based routing logic
+    if (userRole === UserRole.admin) {
+      // Admin trying to access student/tutor routes
+      if (pathname.startsWith("/dashboard") || pathname.startsWith("/tutor")) {
+        return NextResponse.redirect(new URL("/admin-dashboard", request.url));
+      }
+    } else if (userRole === UserRole.student) {
+      // Student trying to access admin/tutor routes
+      if (pathname.startsWith("/admin-dashboard") || pathname.startsWith("/tutor")) {
+        return NextResponse.redirect(new URL("/dashboard", request.url));
+      }
+    } else if (userRole === UserRole.tutor) {
+      // Tutor trying to access admin/student routes
+      if (pathname.startsWith("/admin-dashboard") || pathname.startsWith("/dashboard")) {
+        return NextResponse.redirect(new URL("/tutor/dashboard", request.url));
+      }
+    }
+
+    return NextResponse.next();
+  } catch (error) {
+    // If session check fails, redirect to login
     return NextResponse.redirect(new URL("/login", request.url));
   }
-
-  //* User is authenticated and role = ADMIN
-  //* User can not visit user dashboard
-  if (isAdmin && pathname.startsWith("/dashboard")) {
-    return NextResponse.redirect(new URL("/admin-dashboard", request.url));
-  }
-
-  //* User is authenticated and role = USER
-  //* User can not visit admin-dashboard
-  if (!isAdmin && pathname.startsWith("/admin-dashboard")) {
-    return NextResponse.redirect(new URL("/dashboard", request.url));
-  }
-
-  return NextResponse.next();
 }
 
 export const config = {
   matcher: [
-    "/dashboard",
     "/dashboard/:path*",
-    "/admin-dashboard",
-    "/admin-dashboard/:path*",
+    "/admin-dashboard/:path*", 
+    "/tutor/:path*",
   ],
 };

@@ -20,7 +20,7 @@ import { authClient } from "@/lib/auth-client";
 import { useForm } from "@tanstack/react-form";
 import { toast } from "sonner";
 import { useRouter } from "next/navigation";
-import { Roles } from "@/constants/roles";
+import { UserRole } from "@/constants/roles";
 import * as z from "zod";
 
 type UserWithRole = {
@@ -45,11 +45,15 @@ export function LoginForm({ ...props }: React.ComponentProps<typeof Card>) {
 
       // After successful login, get user session to check role
       const { data: sessionData } = await authClient.getSession();
+      const userRole = (sessionData?.user as UserWithRole)?.role;
 
-      if ((sessionData?.user as UserWithRole)?.role === Roles.admin) {
+      // Redirect based on user role
+      if (userRole === UserRole.admin) {
         router.push("/admin-dashboard");
+      } else if (userRole === UserRole.tutor) {
+        router.push("/tutor/dashboard");
       } else {
-        router.push("/dashboard");
+        router.push("/dashboard"); // Default for students
       }
     } catch (error) {
       console.error("Google login error:", error);
@@ -79,11 +83,15 @@ export function LoginForm({ ...props }: React.ComponentProps<typeof Card>) {
 
         // Get user session to check role
         const { data: sessionData } = await authClient.getSession();
+        const userRole = (sessionData?.user as UserWithRole)?.role;
 
-        if ((sessionData?.user as UserWithRole)?.role === Roles.admin) {
+        // Redirect based on user role
+        if (userRole === UserRole.admin) {
           router.push("/admin-dashboard");
+        } else if (userRole === UserRole.tutor) {
+          router.push("/tutor/dashboard");
         } else {
-          router.push("/dashboard");
+          router.push("/dashboard"); // Default for students
         }
       } catch (err) {
         toast.error("Something went wrong, please try again.", { id: toastId });

@@ -16,7 +16,8 @@ import {
 } from "@/components/ui/sidebar";
 import Link from "next/link";
 import { adminRoutes } from "@/routes/adminRoutes";
-import { userRoutes } from "@/routes/userRoutes";
+import { studentRoutes } from "@/routes/studentRoutes";
+import { tutorRoutes } from "@/routes/tutorRoutes";
 import { Route } from "@/types";
 
 export function AppSidebar({
@@ -28,11 +29,14 @@ export function AppSidebar({
   let routes: Route[] = [];
 
   switch (user?.role) {
-    case "admin":
+    case "ADMIN":
       routes = adminRoutes;
       break;
-    case "user":
-      routes = userRoutes;
+    case "STUDENT":
+      routes = studentRoutes;
+      break;
+    case "TUTOR":
+      routes = tutorRoutes;
       break;
     default:
       routes = [];
@@ -42,6 +46,11 @@ export function AppSidebar({
   return (
     <Sidebar {...props}>
       <SidebarContent>
+        {/* Debug info */}
+        <div className="p-4 text-xs text-muted-foreground">
+          Role: {user?.role || 'No role'} | Routes: {routes.length}
+        </div>
+        
         {routes.map((item) => (
           <SidebarGroup key={item.title}>
             <SidebarGroupLabel>{item.title}</SidebarGroupLabel>

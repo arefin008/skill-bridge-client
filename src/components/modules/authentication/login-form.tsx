@@ -18,15 +18,9 @@ import {
 import { Input } from "@/components/ui/input";
 import { authClient } from "@/lib/auth-client";
 import { useForm } from "@tanstack/react-form";
+import { useRouter } from "next/router";
 import { toast } from "sonner";
-import { useRouter } from "next/navigation";
-import { UserRole } from "@/constants/roles";
 import * as z from "zod";
-
-type UserWithRole = {
-  role?: string;
-  [key: string]: unknown;
-};
 
 const formSchema = z.object({
   password: z.string().min(8, "Minimum length is 8"),
@@ -34,31 +28,13 @@ const formSchema = z.object({
 });
 
 export function LoginForm({ ...props }: React.ComponentProps<typeof Card>) {
-  const router = useRouter();
-
   const handleGoogleLogin = async () => {
-    try {
-      await authClient.signIn.social({
-        provider: "google",
-        callbackURL: "http://localhost:3000",
-      });
+    const data = authClient.signIn.social({
+      provider: "google",
+      callbackURL: "http://localhost:3000",
+    });
 
-      // After successful login, get user session to check role
-      const { data: sessionData } = await authClient.getSession();
-      const userRole = (sessionData?.user as UserWithRole)?.role;
-
-      // Redirect based on user role
-      if (userRole === UserRole.admin) {
-        router.push("/admin-dashboard");
-      } else if (userRole === UserRole.tutor) {
-        router.push("/tutor/dashboard");
-      } else {
-        router.push("/dashboard"); // Default for students
-      }
-    } catch (error) {
-      console.error("Google login error:", error);
-      toast.error("Failed to login with Google");
-    }
+    console.log(data);
   };
 
   const form = useForm({
@@ -80,19 +56,6 @@ export function LoginForm({ ...props }: React.ComponentProps<typeof Card>) {
         }
 
         toast.success("User Logged in Successfully", { id: toastId });
-
-        // Get user session to check role
-        const { data: sessionData } = await authClient.getSession();
-        const userRole = (sessionData?.user as UserWithRole)?.role;
-
-        // Redirect based on user role
-        if (userRole === UserRole.admin) {
-          router.push("/admin-dashboard");
-        } else if (userRole === UserRole.tutor) {
-          router.push("/tutor/dashboard");
-        } else {
-          router.push("/dashboard"); // Default for students
-        }
       } catch (err) {
         toast.error("Something went wrong, please try again.", { id: toastId });
       }
@@ -116,8 +79,10 @@ export function LoginForm({ ...props }: React.ComponentProps<typeof Card>) {
           }}
         >
           <FieldGroup>
-            <form.Field name="email">
-              {(field) => {
+            <form.Field
+              name="email"
+              // eslint-disable-next-line react/no-children-prop
+              children={(field) => {
                 const isInvalid =
                   field.state.meta.isTouched && !field.state.meta.isValid;
                 return (
@@ -136,9 +101,11 @@ export function LoginForm({ ...props }: React.ComponentProps<typeof Card>) {
                   </Field>
                 );
               }}
-            </form.Field>
-            <form.Field name="password">
-              {(field) => {
+            />
+            <form.Field
+              name="password"
+              // eslint-disable-next-line react/no-children-prop
+              children={(field) => {
                 const isInvalid =
                   field.state.meta.isTouched && !field.state.meta.isValid;
                 return (
@@ -157,7 +124,7 @@ export function LoginForm({ ...props }: React.ComponentProps<typeof Card>) {
                   </Field>
                 );
               }}
-            </form.Field>
+            />
           </FieldGroup>
         </form>
       </CardContent>

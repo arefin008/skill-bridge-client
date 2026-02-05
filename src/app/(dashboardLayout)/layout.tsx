@@ -13,18 +13,24 @@ import {
   SidebarProvider,
   SidebarTrigger,
 } from "@/components/ui/sidebar";
+import { UserRole } from "@/constants/roles";
 import { userService } from "@/services/user.service";
 
 export default async function DashboardLayout({
   admin,
-  user,
+  student,
+  tutors,
 }: {
   children: React.ReactNode;
   admin: React.ReactNode;
-  user: React.ReactNode;
+  student: React.ReactNode;
+  tutors: React.ReactNode;
 }) {
   const { data } = await userService.getSession();
   const userInfo = data?.user || null;
+
+  console.log("data:", data);
+  console.log("userInfo:", userInfo);
 
   return (
     <SidebarProvider>
@@ -39,9 +45,7 @@ export default async function DashboardLayout({
           <Breadcrumb>
             <BreadcrumbList>
               <BreadcrumbItem className="hidden md:block">
-                <BreadcrumbLink href="#">
-                  Dashboard
-                </BreadcrumbLink>
+                <BreadcrumbLink href="#">Dashboard</BreadcrumbLink>
               </BreadcrumbItem>
               <BreadcrumbSeparator className="hidden md:block" />
               <BreadcrumbItem>
@@ -51,7 +55,9 @@ export default async function DashboardLayout({
           </Breadcrumb>
         </header>
         <div className="flex flex-1 flex-col gap-4 p-4">
-          {userInfo?.role === "ADMIN" ? admin : user}
+          {userInfo?.role === UserRole.admin && admin}
+          {userInfo?.role === UserRole.student && student}
+          {userInfo?.role === UserRole.tutor && tutors}
         </div>
       </SidebarInset>
     </SidebarProvider>

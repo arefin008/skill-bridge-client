@@ -1,6 +1,10 @@
 export interface Booking {
   id: string;
-  tutorId: string;
   studentId: string;
-  status: "ACTIVE" | "CANCELLED";
+  tutorId: string;
+  date: Date;
+  duration: number;
+  status: "pending" | "confirmed" | "cancelled" | "completed";
+  createdAt: Date;
+  updatedAt: Date;
 }

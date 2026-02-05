@@ -6,15 +6,15 @@ export const tutorRoutes: Route[] = [
     items: [
       {
         title: "Dashboard",
-        url: "/tutor/dashboard",
+        url: "/tutor-dashboard/dashboard",
       },
       {
         title: "Availability",
-        url: "/tutor/availability",
+        url: "/tutor-dashboard/availability",
       },
       {
         title: "Profile",
-        url: "/tutor/profile",
+        url: "/tutor-dashboard/profile",
       },
     ],
   },

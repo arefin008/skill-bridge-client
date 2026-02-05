@@ -20,7 +20,7 @@ export const bookingService = {
     }),
 
   // Tutor
-  tutorSessions: () => serverFetch("/api/bookings/tutor/me"),
+  tutorSessions: () => serverFetch("/bookings/tutor/me"),
 
   // Admin
   getAll: () => serverFetch("/bookings"),

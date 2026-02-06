@@ -1,7 +1,8 @@
-export default function AdminDashboard() {
+export default async function AdminDashboard() {
   return (
     <div>
-      <h1> Admin Dashboard </h1>
+      <h1>Admin Dashboard</h1>
+      <p>Total bookings:</p>
     </div>
   );
 }

@@ -24,18 +24,24 @@ export async function proxy(request: NextRequest) {
       }
     } else if (userRole === UserRole.student) {
       // Student trying to access admin/tutor routes
-      if (pathname.startsWith("/admin-dashboard") || pathname.startsWith("/tutor")) {
+      if (
+        pathname.startsWith("/admin-dashboard") ||
+        pathname.startsWith("/tutor")
+      ) {
         return NextResponse.redirect(new URL("/dashboard", request.url));
       }
     } else if (userRole === UserRole.tutor) {
       // Tutor trying to access admin/student routes
-      if (pathname.startsWith("/admin-dashboard") || pathname.startsWith("/dashboard")) {
+      if (
+        pathname.startsWith("/admin-dashboard") ||
+        pathname.startsWith("/dashboard")
+      ) {
         return NextResponse.redirect(new URL("/tutor/dashboard", request.url));
       }
     }
 
     return NextResponse.next();
-  } catch (error) {
+  } catch {
     // If session check fails, redirect to login
     return NextResponse.redirect(new URL("/login", request.url));
   }
@@ -43,8 +49,6 @@ export async function proxy(request: NextRequest) {
 
 export const config = {
   matcher: [
-    "/dashboard/:path*",
-    "/admin-dashboard/:path*", 
-    "/tutor/:path*",
+    // "/dashboard/:path*", "/admin-dashboard/:path*", "/tutor/:path*"
   ],
 };

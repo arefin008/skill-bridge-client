@@ -1,46 +1,83 @@
-interface TutorProfileData {
-  [key: string]: unknown;
-}
+import { Tutor, TutorFilter } from "@/types";
+type FetchOptions = {
+  revalidate?: number;
+};
 
 export const tutorService = {
   // Public
-  async getAll(filters?: Record<string, string>) {
+  async getAll(
+    filters?: TutorFilter,
+    options?: FetchOptions,
+  ): Promise<{ data: Tutor[] }> {
+    // Make sure API base is defined
     const API_BASE = process.env.NEXT_PUBLIC_API_URL;
-    if (!API_BASE) throw new Error("API base URL is not defined");
+    if (!API_BASE) {
+      console.error("NEXT_PUBLIC_API_URL is not defined");
+      return { data: [] };
+    }
 
-    const query = filters ? `?${new URLSearchParams(filters).toString()}` : "";
+    // Build query string from filters
+    const query = filters
+      ? `?${new URLSearchParams(
+          Object.entries(filters)
+            .filter(([, v]) => v !== undefined && v !== null)
+            .reduce<Record<string, string>>((acc, [k, v]) => {
+              acc[k] = String(v);
+              return acc;
+            }, {}),
+        ).toString()}`
+      : "";
 
-    const res = await fetch(`${API_BASE}/tutors${query}`);
-    if (!res.ok) throw new Error("Failed to fetch tutors");
-    return res.json();
+    try {
+      // Use absolute URL for server-side fetch
+      const res = await fetch(`${API_BASE}/api/tutors${query}`, {
+        // next option only works on server components
+        next: { revalidate: options?.revalidate ?? 0 },
+      });
+
+      if (!res.ok) {
+        console.error("Failed to fetch tutors:", res.status, res.statusText);
+        return { data: [] };
+      }
+
+      const data = await res.json();
+
+      // Ensure the returned object always has `data` property
+      return {
+        data: Array.isArray(data.data) ? data.data : [],
+      };
+    } catch (error) {
+      console.error("Error fetching tutors:", error);
+      return { data: [] };
+    }
   },
 
-  async getById(id: string) {
-    const API_BASE = process.env.NEXT_PUBLIC_API_URL;
-    if (!API_BASE) throw new Error("API base URL is not defined");
+  // async getById(id: string) {
+  //   const API_BASE = process.env.NEXT_PUBLIC_API_URL;
+  //   if (!API_BASE) throw new Error("API base URL is not defined");
 
-    const res = await fetch(`${API_BASE}/tutors/${id}`);
-    if (!res.ok) throw new Error("Failed to fetch tutor");
-    return res.json();
-  },
+  //   const res = await fetch(`${API_BASE}/tutors/${id}`);
+  //   if (!res.ok) throw new Error("Failed to fetch tutor");
+  //   return res.json();
+  // },
 
-  async createProfile(data: TutorProfileData) {
-    const res = await fetch("/api/tutors", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(data),
-    });
-    if (!res.ok) throw new Error("Failed to create tutor profile");
-    return res.json();
-  },
+  // async createProfile(data: TutorProfileData) {
+  //   const res = await fetch("/api/tutors", {
+  //     method: "POST",
+  //     headers: { "Content-Type": "application/json" },
+  //     body: JSON.stringify(data),
+  //   });
+  //   if (!res.ok) throw new Error("Failed to create tutor profile");
+  //   return res.json();
+  // },
 
-  async updateProfile(data: TutorProfileData) {
-    const res = await fetch("/api/tutors/profile", {
-      method: "PUT",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(data),
-    });
-    if (!res.ok) throw new Error("Failed to update tutor profile");
-    return res.json();
-  },
+  // async updateProfile(data: TutorProfileData) {
+  //   const res = await fetch("/api/tutors/profile", {
+  //     method: "PUT",
+  //     headers: { "Content-Type": "application/json" },
+  //     body: JSON.stringify(data),
+  //   });
+  //   if (!res.ok) throw new Error("Failed to update tutor profile");
+  //   return res.json();
+  // },
 };

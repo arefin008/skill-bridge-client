@@ -1,27 +1,48 @@
-import { clientFetch, serverFetch } from "@/lib/http";
+import { Booking } from "@/types";
 
-interface BookingData {
-  [key: string]: unknown;
-}
+const API_BASE = process.env.NEXT_PUBLIC_API_URL;
 
 export const bookingService = {
-  // Student
-  create: (data: BookingData) =>
-    clientFetch("/api/bookings", {
+  async create(data: Partial<Booking>) {
+    const res = await fetch(`${API_BASE}/api/booking`, {
       method: "POST",
+      headers: { "Content-Type": "application/json" },
       body: JSON.stringify(data),
-    }),
+    });
+    if (!res.ok) throw new Error("Failed to create booking");
+    return res.json();
+  },
 
-  myBookings: () => serverFetch("/bookings/me"),
+  async getAll(): Promise<{ data: Booking[] }> {
+    const res = await fetch(`${API_BASE}/api/booking`, { cache: "no-store" });
+    if (!res.ok) throw new Error("Failed to fetch all bookings");
+    const data = await res.json();
+    return { data: data.data ?? [] };
+  },
 
-  cancel: (id: string) =>
-    clientFetch(`/api/bookings/${id}/cancel`, {
+  async getMyBookings(): Promise<{ data: Booking[] }> {
+    const res = await fetch(`${API_BASE}/api/booking/me`, {
+      cache: "no-store",
+    });
+    if (!res.ok) throw new Error("Failed to fetch my bookings");
+    const data = await res.json();
+    return { data: data.data ?? [] };
+  },
+
+  async cancelMyBooking(id: string) {
+    const res = await fetch(`${API_BASE}/api/booking/${id}/cancel`, {
       method: "PATCH",
-    }),
+    });
+    if (!res.ok) throw new Error("Failed to cancel booking");
+    return res.json();
+  },
 
-  // Tutor
-  tutorSessions: () => serverFetch("/bookings/tutor/me"),
-
-  // Admin
-  getAll: () => serverFetch("/bookings"),
+  async getTutorSessions(): Promise<{ data: Booking[] }> {
+    const res = await fetch(`${API_BASE}/api/booking/tutor/me`, {
+      cache: "no-store",
+    });
+    if (!res.ok) throw new Error("Failed to fetch tutor sessions");
+    const data = await res.json();
+    return { data: data.data ?? [] };
+  },
 };

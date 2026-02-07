@@ -1,13 +1,15 @@
-import { clientFetch } from "@/lib/http";
+import { Review } from "@/types";
 
-interface ReviewData {
-  [key: string]: unknown;
-}
+const API_BASE = process.env.NEXT_PUBLIC_API_URL;
 
 export const reviewService = {
-  create: (data: ReviewData) =>
-    clientFetch("/api/reviews", {
+  async create(data: Omit<Review, "id" | "createdAt">) {
+    const res = await fetch(`${API_BASE}/api/review`, {
       method: "POST",
+      headers: { "Content-Type": "application/json" },
       body: JSON.stringify(data),
-    }),
+    });
+    if (!res.ok) throw new Error("Failed to create review");
+    return res.json();
+  },
 };

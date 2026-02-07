@@ -1,4 +1,4 @@
-import { Tutor, TutorFilter } from "@/types";
+import { Tutor, TutorProfileData, TutorFilter } from "@/types";
 type FetchOptions = {
   revalidate?: number;
 };
@@ -52,32 +52,56 @@ export const tutorService = {
     }
   },
 
-  // async getById(id: string) {
-  //   const API_BASE = process.env.NEXT_PUBLIC_API_URL;
-  //   if (!API_BASE) throw new Error("API base URL is not defined");
+  async getById(id: string): Promise<Tutor | null> {
+    const API_BASE = process.env.NEXT_PUBLIC_API_URL;
+    if (!API_BASE) throw new Error("API base URL is not defined");
 
-  //   const res = await fetch(`${API_BASE}/tutors/${id}`);
-  //   if (!res.ok) throw new Error("Failed to fetch tutor");
-  //   return res.json();
-  // },
+    const res = await fetch(`${API_BASE}/api/tutors/${id}`, {
+      cache: "no-store",
+    });
+    if (res.status === 404) return null;
+    if (!res.ok) throw new Error("Failed to fetch tutor");
 
-  // async createProfile(data: TutorProfileData) {
-  //   const res = await fetch("/api/tutors", {
-  //     method: "POST",
-  //     headers: { "Content-Type": "application/json" },
-  //     body: JSON.stringify(data),
-  //   });
-  //   if (!res.ok) throw new Error("Failed to create tutor profile");
-  //   return res.json();
-  // },
+    const tutor: Tutor = await res.json(); // directly the tutor
+    return tutor;
+  },
 
-  // async updateProfile(data: TutorProfileData) {
-  //   const res = await fetch("/api/tutors/profile", {
-  //     method: "PUT",
-  //     headers: { "Content-Type": "application/json" },
-  //     body: JSON.stringify(data),
-  //   });
-  //   if (!res.ok) throw new Error("Failed to update tutor profile");
-  //   return res.json();
-  // },
+  async createProfile(data: TutorProfileData): Promise<Tutor> {
+    const API_BASE = process.env.NEXT_PUBLIC_API_URL;
+    if (!API_BASE) throw new Error("API base URL is not defined");
+
+    const res = await fetch(`${API_BASE}/api/tutors`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        // Optionally include auth token if needed:
+        // Authorization: `Bearer ${token}`,
+      },
+      body: JSON.stringify(data),
+    });
+
+    if (!res.ok) throw new Error("Failed to create tutor profile");
+
+    return res.json();
+  },
+
+  /**
+   *  Update tutor profile
+   */
+  async updateProfile(data: Partial<TutorProfileData>): Promise<Tutor> {
+    const API_BASE = process.env.NEXT_PUBLIC_API_URL;
+    if (!API_BASE) throw new Error("API base URL is not defined");
+
+    const res = await fetch(`${API_BASE}/api/tutors/profile`, {
+      method: "PUT",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(data),
+    });
+
+    if (!res.ok) throw new Error("Failed to update tutor profile");
+
+    return res.json();
+  },
 };

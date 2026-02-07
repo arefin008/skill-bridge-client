@@ -17,3 +17,10 @@ export interface Tutor {
   availability: TutorAvailability[];
   reviews?: Review[];
 }
+
+export interface TutorProfileData {
+  bio: string;
+  hourlyRate: number;
+  experience: number;
+  categories?: string[];
+}

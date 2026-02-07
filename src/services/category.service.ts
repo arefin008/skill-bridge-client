@@ -1,21 +1,32 @@
-import { clientFetch, serverFetch } from "@/lib/http";
+import { Category } from "@/types";
 
-interface CategoryData {
-  [key: string]: unknown;
-}
+const API_BASE = process.env.NEXT_PUBLIC_API_URL;
 
 export const categoryService = {
-  getAll: () => serverFetch("/api/categories"),
+  async getCategories(): Promise<{ data: Category[] }> {
+    const res = await fetch(`${API_BASE}/api/category`);
+    if (!res.ok) throw new Error("Failed to fetch categories");
+    const data = await res.json();
+    return { data: data.data ?? [] };
+  },
 
-  create: (data: CategoryData) =>
-    clientFetch("/api/categories", {
+  async createCategory(name: string) {
+    const res = await fetch(`${API_BASE}/api/category`, {
       method: "POST",
-      body: JSON.stringify(data),
-    }),
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ name }),
+    });
+    if (!res.ok) throw new Error("Failed to create category");
+    return res.json();
+  },
 
-  update: (id: string, data: CategoryData) =>
-    clientFetch(`/api/categories/${id}`, {
+  async updateCategory(id: string, data: Partial<Category>) {
+    const res = await fetch(`${API_BASE}/api/category/${id}`, {
       method: "PATCH",
+      headers: { "Content-Type": "application/json" },
       body: JSON.stringify(data),
-    }),
+    });
+    if (!res.ok) throw new Error("Failed to update category");
+    return res.json();
+  },
 };

@@ -1,71 +1,22 @@
-// import { AppSidebar } from "@/components/layout/app-sidebar";
-// import {
-//   Breadcrumb,
-//   BreadcrumbItem,
-//   BreadcrumbLink,
-//   BreadcrumbList,
-//   BreadcrumbPage,
-//   BreadcrumbSeparator,
-// } from "@/components/ui/breadcrumb";
-// import { Separator } from "@/components/ui/separator";
-// import {
-//   SidebarInset,
-//   SidebarProvider,
-//   SidebarTrigger,
-// } from "@/components/ui/sidebar";
-// import { UserRole } from "@/constants/roles";
-// import { userService } from "@/services/user.service";
+import { AppSidebar } from "@/components/layout/app-sidebar";
+import {
+  Breadcrumb,
+  BreadcrumbItem,
+  BreadcrumbLink,
+  BreadcrumbList,
+  BreadcrumbPage,
+  BreadcrumbSeparator,
+} from "@/components/ui/breadcrumb";
+import { Separator } from "@/components/ui/separator";
+import {
+  SidebarInset,
+  SidebarProvider,
+  SidebarTrigger,
+} from "@/components/ui/sidebar";
+import { UserRole } from "@/constants/roles";
+import { userService } from "@/services/user.service";
 
-import { DashboardLayoutClient } from "@/components/layout/dashboard-layout";
-
-// export default async function DashboardLayout({
-//   admin,
-//   student,
-//   tutors,
-// }: {
-//   admin: React.ReactNode;
-//   student: React.ReactNode;
-//   tutors: React.ReactNode;
-// }) {
-//   const { data } = await userService.getSession();
-//   const userInfo = data?.user || null;
-
-//   console.log("data:", data);
-//   console.log("userInfo:", userInfo);
-
-//   return (
-//     <SidebarProvider>
-//       <AppSidebar user={userInfo} />
-//       <SidebarInset>
-//         <header className="flex h-16 shrink-0 items-center gap-2 border-b px-4">
-//           <SidebarTrigger className="-ml-1" />
-//           <Separator
-//             orientation="vertical"
-//             className="mr-2 data-[orientation=vertical]:h-4"
-//           />
-//           <Breadcrumb>
-//             <BreadcrumbList>
-//               <BreadcrumbItem className="hidden md:block">
-//                 <BreadcrumbLink href="#">Dashboard</BreadcrumbLink>
-//               </BreadcrumbItem>
-//               <BreadcrumbSeparator className="hidden md:block" />
-//               <BreadcrumbItem>
-//                 <BreadcrumbPage>Overview</BreadcrumbPage>
-//               </BreadcrumbItem>
-//             </BreadcrumbList>
-//           </Breadcrumb>
-//         </header>
-//         <div className="flex flex-1 flex-col gap-4 p-4">
-//           {userInfo?.role === UserRole.admin && admin}
-//           {userInfo?.role === UserRole.student && student}
-//           {userInfo?.role === UserRole.tutor && tutors}
-//         </div>
-//       </SidebarInset>
-//     </SidebarProvider>
-//   );
-// }
-
-export default function DashboardLayout({
+export default async function DashboardLayout({
   admin,
   student,
   tutors,
@@ -74,7 +25,54 @@ export default function DashboardLayout({
   student: React.ReactNode;
   tutors: React.ReactNode;
 }) {
+  const { data } = await userService.getSession();
+  const userInfo = data?.user || null;
+
+  console.log("data:", data);
+  console.log("userInfo:", userInfo);
+
   return (
-    <DashboardLayoutClient admin={admin} student={student} tutors={tutors} />
+    <SidebarProvider>
+      <AppSidebar user={userInfo} />
+      <SidebarInset>
+        <header className="flex h-16 shrink-0 items-center gap-2 border-b px-4">
+          <SidebarTrigger className="-ml-1" />
+          <Separator
+            orientation="vertical"
+            className="mr-2 data-[orientation=vertical]:h-4"
+          />
+          <Breadcrumb>
+            <BreadcrumbList>
+              <BreadcrumbItem className="hidden md:block">
+                <BreadcrumbLink href="#">Dashboard</BreadcrumbLink>
+              </BreadcrumbItem>
+              <BreadcrumbSeparator className="hidden md:block" />
+              <BreadcrumbItem>
+                <BreadcrumbPage>Overview</BreadcrumbPage>
+              </BreadcrumbItem>
+            </BreadcrumbList>
+          </Breadcrumb>
+        </header>
+        <div className="flex flex-1 flex-col gap-4 p-4">
+          {userInfo?.role === UserRole.admin && admin}
+          {userInfo?.role === UserRole.student && student}
+          {userInfo?.role === UserRole.tutor && tutors}
+        </div>
+      </SidebarInset>
+    </SidebarProvider>
   );
 }
+// import { DashboardLayoutClient } from "@/components/layout/dashboard-layout";
+// export default function DashboardLayout({
+//   admin,
+//   student,
+//   tutors,
+// }: {
+//   admin: React.ReactNode;
+//   student: React.ReactNode;
+//   tutors: React.ReactNode;
+// }) {
+//   return (
+//     <DashboardLayoutClient admin={admin} student={student} tutors={tutors} />
+//   );
+// }

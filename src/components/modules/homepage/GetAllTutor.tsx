@@ -56,7 +56,7 @@ export default function TutorCard({ tutor }: TutorCardProps) {
         </p>
 
         {/* Categories */}
-        {categories.length > 0 && (
+        {categories?.length > 0 && (
           <div className="mb-3 flex flex-wrap gap-2">
             {categories.slice(0, 3).map((cat) => (
               <Badge key={cat.id} variant="secondary" className="text-xs">

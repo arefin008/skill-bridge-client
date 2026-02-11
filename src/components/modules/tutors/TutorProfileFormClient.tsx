@@ -60,7 +60,7 @@ export function TutorProfileFormClient({ mode, defaultValues }: Props) {
           mode === "create"
             ? await createTutorProfile(data)
             : await updateTutorProfile(data);
-
+        console.log("res", res);
         if ((res as any).error) {
           toast.error((res as any).error.message, { id: toastId });
           return;

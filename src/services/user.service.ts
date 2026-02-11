@@ -10,7 +10,7 @@ export const userService = {
 
       console.log("Cookie Store:", cookieStore.toString());
 
-      const res = await fetch(`${AUTH_URL}/get-session`, {
+      const res = await fetch(`${AUTH_URL}/api/auth/get-session`, {
         headers: {
           Cookie: cookieStore.toString(),
         },

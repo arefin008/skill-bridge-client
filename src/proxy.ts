@@ -36,7 +36,9 @@ export async function proxy(request: NextRequest) {
         pathname.startsWith("/admin-dashboard") ||
         pathname.startsWith("/dashboard")
       ) {
-        return NextResponse.redirect(new URL("/tutor/dashboard", request.url));
+        return NextResponse.redirect(
+          new URL("/tutor-dashboard/dashboard", request.url),
+        );
       }
     }
 
@@ -48,7 +50,5 @@ export async function proxy(request: NextRequest) {
 }
 
 export const config = {
-  matcher: [
-    // "/dashboard/:path*", "/admin-dashboard/:path*", "/tutor/:path*"
-  ],
+  matcher: ["/dashboard/:path*", "/admin-dashboard/:path*", "/tutor/:path*"],
 };

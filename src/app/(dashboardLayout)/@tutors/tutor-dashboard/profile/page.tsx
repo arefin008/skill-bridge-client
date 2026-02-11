@@ -10,7 +10,7 @@ export default async function TutorProfilePage() {
   return (
     <section className="flex justify-center mt-8">
       {/* {hasProfile ? (
-        <TutorProfileFormClient mode="update" defaultValues={tutor} />
+      <TutorProfileFormClient mode="update" //defaultValues={tutor} />
       ) : (
       )} */}
       <TutorProfileFormClient mode="create" />

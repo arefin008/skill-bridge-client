@@ -19,7 +19,7 @@ export const availabilityService = {
     });
     if (!res.ok) throw new Error("Failed to fetch availability");
     const data = await res.json();
-    return { data: data.data ?? [] };
+    return { data: Array.isArray(data) ? data : [] };
   },
 
   async delete(id: string) {

@@ -18,6 +18,8 @@ import { UserRole } from "@/constants/roles";
 import { studentRoutes } from "@/routes/studentRoutes";
 import { tutorRoutes } from "@/routes/tutorRoutes";
 
+import { SidebarFooterActions } from "./SidebarFooterActions";
+
 export function AppSidebar({
   user,
   ...props
@@ -61,6 +63,7 @@ export function AppSidebar({
           </SidebarGroup>
         ))}
       </SidebarContent>
+      <SidebarFooterActions />
       <SidebarRail />
     </Sidebar>
   );

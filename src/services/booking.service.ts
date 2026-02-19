@@ -4,7 +4,7 @@ const API_BASE = process.env.NEXT_PUBLIC_API_URL;
 
 export const bookingService = {
   async create(data: Partial<Booking>) {
-    const res = await fetch(`${API_BASE}/api/booking`, {
+    const res = await fetch(`${API_BASE}/api/bookings`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(data),
@@ -14,23 +14,23 @@ export const bookingService = {
   },
 
   async getAll(): Promise<{ data: Booking[] }> {
-    const res = await fetch(`${API_BASE}/api/booking`, { cache: "no-store" });
+    const res = await fetch(`${API_BASE}/api/bookings`, { cache: "no-store" });
     if (!res.ok) throw new Error("Failed to fetch all bookings");
     const data = await res.json();
-    return { data: data.data ?? [] };
+    return { data: Array.isArray(data) ? data : [] };
   },
 
   async getMyBookings(): Promise<{ data: Booking[] }> {
-    const res = await fetch(`${API_BASE}/api/booking/me`, {
+    const res = await fetch(`${API_BASE}/api/bookings/me`, {
       cache: "no-store",
     });
     if (!res.ok) throw new Error("Failed to fetch my bookings");
     const data = await res.json();
-    return { data: data.data ?? [] };
+    return { data: Array.isArray(data) ? data : [] };
   },
 
   async cancelMyBooking(id: string) {
-    const res = await fetch(`${API_BASE}/api/booking/${id}/cancel`, {
+    const res = await fetch(`${API_BASE}/api/bookings/${id}/cancel`, {
       method: "PATCH",
     });
     if (!res.ok) throw new Error("Failed to cancel booking");
@@ -38,11 +38,19 @@ export const bookingService = {
   },
 
   async getTutorSessions(): Promise<{ data: Booking[] }> {
-    const res = await fetch(`${API_BASE}/api/booking/tutor/me`, {
+    const res = await fetch(`${API_BASE}/api/bookings/tutor/me`, {
       cache: "no-store",
     });
     if (!res.ok) throw new Error("Failed to fetch tutor sessions");
     const data = await res.json();
-    return { data: data.data ?? [] };
+    return { data: Array.isArray(data) ? data : [] };
+  },
+
+  async completeSession(id: string) {
+    const res = await fetch(`${API_BASE}/api/bookings/${id}/complete`, {
+      method: "PATCH",
+    });
+    if (!res.ok) throw new Error("Failed to complete booking");
+    return res.json();
   },
 };

@@ -18,7 +18,7 @@ import {
 import { Input } from "@/components/ui/input";
 import { authClient } from "@/lib/auth-client";
 import { useForm } from "@tanstack/react-form";
-import { useRouter } from "next/router";
+import { useRouter } from "next/navigation";
 import { toast } from "sonner";
 import * as z from "zod";
 
@@ -28,13 +28,12 @@ const formSchema = z.object({
 });
 
 export function LoginForm({ ...props }: React.ComponentProps<typeof Card>) {
+  const router = useRouter();
   const handleGoogleLogin = async () => {
-    const data = authClient.signIn.social({
+    await authClient.signIn.social({
       provider: "google",
       callbackURL: "http://localhost:3000",
     });
-
-    console.log(data);
   };
 
   const form = useForm({
@@ -48,15 +47,31 @@ export function LoginForm({ ...props }: React.ComponentProps<typeof Card>) {
     onSubmit: async ({ value }) => {
       const toastId = toast.loading("Logging in");
       try {
-        const { data, error } = await authClient.signIn.email(value);
+        const { error } = await authClient.signIn.email(value);
 
         if (error) {
           toast.error(error.message, { id: toastId });
           return;
         }
 
+        const session = await authClient.getSession();
+        const role = (session.data?.user as any)?.role;
+
         toast.success("User Logged in Successfully", { id: toastId });
-      } catch (err) {
+
+        // Redirect based on role
+        if (role === "ADMIN") {
+          router.push("/admin-dashboard");
+        } else if (role === "STUDENT") {
+          router.push("/dashboard");
+        } else if (role === "TUTOR") {
+          router.push("/tutor-dashboard/dashboard");
+        } else {
+          router.push("/");
+        }
+
+        router.refresh();
+      } catch (err: unknown) {
         toast.error("Something went wrong, please try again.", { id: toastId });
       }
     },

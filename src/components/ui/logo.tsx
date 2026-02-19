@@ -1,5 +1,8 @@
 "use client";
 
+import Link from "next/link";
+import Image from "next/image";
+
 import { Download } from "lucide-react";
 
 import { cn } from "@/lib/utils";
@@ -85,25 +88,34 @@ const LogoBrandDownload = ({
 
 const Logo = ({ url, className, children, ...props }: LogoProps) => {
   return (
-    <a
+    <Link
       href={url}
       className={cn("flex max-h-8 items-center gap-2", className)}
       {...props}
     >
       {children}
-    </a>
+    </Link>
   );
 };
 
-const LogoImage = ({ src, alt, className, ...props }: LogoImageProps) => (
-  <img src={src} alt={alt} className={cn("block h-8", className)} {...props} />
-);
-
-const LogoImageMobile = ({ src, alt, className, ...props }: LogoImageProps) => (
-  <img
+const LogoImage = ({ src, alt, className, width = 40, height = 40, ...props }: LogoImageProps) => (
+  <Image
     src={src}
     alt={alt}
-    className={cn("flex h-8 md:hidden", className)}
+    width={Number(width)}
+    height={Number(height)}
+    className={cn("block h-8 w-auto", className)}
+    {...props}
+  />
+);
+
+const LogoImageMobile = ({ src, alt, className, width = 40, height = 40, ...props }: LogoImageProps) => (
+  <Image
+    src={src}
+    alt={alt}
+    width={Number(width)}
+    height={Number(height)}
+    className={cn("flex h-8 w-auto md:hidden", className)}
     {...props}
   />
 );
@@ -112,12 +124,16 @@ const LogoImageDesktop = ({
   src,
   alt,
   className,
+  width = 40,
+  height = 40,
   ...props
 }: LogoImageProps) => (
-  <img
+  <Image
     src={src}
     alt={alt}
-    className={cn("hidden h-8 md:flex", className)}
+    width={Number(width)}
+    height={Number(height)}
+    className={cn("hidden h-8 w-auto md:flex", className)}
     {...props}
   />
 );

@@ -20,6 +20,7 @@ import {
   SheetTrigger,
 } from "@/components/ui/sheet";
 import Link from "next/link";
+import Image from "next/image";
 import { ModeToggle } from "./ModeToggle";
 import { authClient } from "@/lib/auth-client";
 import { useRouter } from "next/navigation";
@@ -60,40 +61,33 @@ const Navbar = ({
   logo = {
     url: "/",
     src: "https://deifkwefumgah.cloudfront.net/shadcnblocks/block/logos/shadcnblockscom-icon.svg",
-    alt: "logo",
-    title: "Next Blog",
+    alt: "SkillBridge Logo",
+    title: "SkillBridge",
   },
   menu = [
     { title: "Home", url: "/" },
-    {
-      title: "Tutors",
-      url: "/tutors",
-    },
-    {
-      title: "About",
-      url: "/#",
-    },
-    {
-      title: "Dashboard",
-      url: "/dashboard",
-    },
+    { title: "Browse Tutors", url: "/tutors" },
+    { title: "About Us", url: "#" },
+    { title: "Support", url: "#" },
   ],
   auth = {
     login: { title: "Login", url: "/login" },
-    signup: { title: "Register", url: "/register" },
+    signup: { title: "Get Started", url: "/register" },
   },
   className,
 }: Navbar1Props) => {
   const router = useRouter();
   const [isAuthenticated, setIsAuthenticated] = useState(false);
+  const [mounted, setMounted] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
+    setMounted(true);
     const checkAuth = async () => {
       try {
         const session = await authClient.getSession();
         setIsAuthenticated(!!session.data);
-      } catch (error) {
+      } catch (err: unknown) {
         setIsAuthenticated(false);
       } finally {
         setIsLoading(false);
@@ -125,27 +119,29 @@ const Navbar = ({
       setIsAuthenticated(false);
       router.push("/");
       router.refresh();
-    } catch (error) {
+    } catch (err: unknown) {
       toast.error("Failed to logout");
     }
   };
   return (
-    <section className={cn("py-4 ", className)}>
-      <div className="container mx-auto px-4">
+    <section className={cn("py-4 border-b", className)}>
+      <div className="max-w-7xl mx-auto px-4">
         {/* Desktop Menu */}
         <nav className="hidden items-center justify-between lg:flex">
           <div className="flex items-center gap-6">
             {/* Logo */}
-            <a href={logo.url} className="flex items-center gap-2">
-              <img
+            <Link href={logo.url} className="flex items-center gap-2">
+              <Image
                 src={logo.src}
+                width={32}
+                height={32}
                 className="max-h-8 dark:invert"
                 alt={logo.alt}
               />
               <span className="text-lg font-semibold tracking-tighter">
                 {logo.title}
               </span>
-            </a>
+            </Link>
             <div className="flex items-center">
               <NavigationMenu>
                 <NavigationMenuList>
@@ -182,66 +178,77 @@ const Navbar = ({
         <div className="block lg:hidden">
           <div className="flex items-center justify-between">
             {/* Logo */}
-            <a href={logo.url} className="flex items-center gap-2">
-              <img
+            <Link href={logo.url} className="flex items-center gap-2">
+              <Image
                 src={logo.src}
+                width={32}
+                height={32}
                 className="max-h-8 dark:invert"
                 alt={logo.alt}
               />
-            </a>
-            <Sheet>
-              <SheetTrigger asChild>
-                <Button variant="outline" size="icon">
-                  <Menu className="size-4" />
-                </Button>
-              </SheetTrigger>
-              <SheetContent className="overflow-y-auto">
-                <SheetHeader>
-                  <SheetTitle>
-                    <a href={logo.url} className="flex items-center gap-2">
-                      <img
-                        src={logo.src}
-                        className="max-h-8 dark:invert"
-                        alt={logo.alt}
-                      />
-                    </a>
-                  </SheetTitle>
-                </SheetHeader>
-                <div className="flex flex-col gap-6 p-4">
-                  <Accordion
-                    type="single"
-                    collapsible
-                    className="flex w-full flex-col gap-4"
-                  >
-                    {menu.map((item) => renderMobileMenuItem(item))}
-                  </Accordion>
+            </Link>
 
-                  <div className="flex flex-col gap-3">
-                    {isAuthenticated ? (
-                      <>
-                        <Button asChild variant="outline">
-                          <Link href="/dashboard">Dashboard</Link>
-                        </Button>
-                        <Button onClick={handleLogout} variant="destructive">
-                          Logout
-                        </Button>
-                      </>
-                    ) : (
-                      <>
-                        <Button asChild variant="outline">
-                          <Link href={auth.login.url}>{auth.login.title}</Link>
-                        </Button>
-                        <Button asChild>
-                          <Link href={auth.signup.url}>
-                            {auth.signup.title}
-                          </Link>
-                        </Button>
-                      </>
-                    )}
+            {mounted ? (
+              <Sheet>
+                <SheetTrigger asChild>
+                  <Button variant="outline" size="icon">
+                    <Menu className="size-4" />
+                  </Button>
+                </SheetTrigger>
+                <SheetContent className="overflow-y-auto">
+                  <SheetHeader>
+                    <SheetTitle>
+                      <Link href={logo.url} className="flex items-center gap-2">
+                        <Image
+                          src={logo.src}
+                          width={32}
+                          height={32}
+                          className="max-h-8 dark:invert"
+                          alt={logo.alt}
+                        />
+                      </Link>
+                    </SheetTitle>
+                  </SheetHeader>
+                  <div className="flex flex-col gap-6 p-4">
+                    <Accordion
+                      type="single"
+                      collapsible
+                      className="flex w-full flex-col gap-4"
+                    >
+                      {menu.map((item) => renderMobileMenuItem(item))}
+                    </Accordion>
+
+                    <div className="flex flex-col gap-3">
+                      {isAuthenticated ? (
+                        <>
+                          <Button asChild variant="outline">
+                            <Link href="/dashboard">Dashboard</Link>
+                          </Button>
+                          <Button onClick={handleLogout} variant="destructive">
+                            Logout
+                          </Button>
+                        </>
+                      ) : (
+                        <>
+                          <Button asChild variant="outline">
+                            <Link href={auth.login.url}>{auth.login.title}</Link>
+                          </Button>
+                          <Button asChild>
+                            <Link href={auth.signup.url}>
+                              {auth.signup.title}
+                            </Link>
+                          </Button>
+                        </>
+                      )}
+                    </div>
                   </div>
-                </div>
-              </SheetContent>
-            </Sheet>
+                </SheetContent>
+              </Sheet>
+            ) : (
+              <Button variant="outline" size="icon" disabled className="opacity-50">
+                <Menu className="size-4" />
+              </Button>
+            )}
           </div>
         </div>
       </div>

@@ -1,4 +1,5 @@
 import { cn } from "@/lib/utils";
+import Link from "next/link";
 
 import { Logo, LogoImage, LogoText } from "@/components/ui/logo";
 
@@ -30,61 +31,57 @@ interface Footer2Props {
 const Footer2 = ({
   logo = {
     src: "https://deifkwefumgah.cloudfront.net/shadcnblocks/block/block-1.svg",
-    alt: "blocks for shadcn/ui",
-    title: "Shadcnblocks.com",
-    url: "https://www.shadcnblocks.com",
+    alt: "SkillBridge Logo",
+    title: "SkillBridge",
+    url: "/",
   },
   className,
-  tagline = "Components made easy.",
+  tagline = "Connect with Expert Tutors. Learn anything, anywhere.",
   menuItems = [
     {
-      title: "Product",
+      title: "Platform",
       links: [
-        { text: "Overview", url: "#" },
-        { text: "Pricing", url: "#" },
-        { text: "Marketplace", url: "#" },
-        { text: "Features", url: "#" },
-        { text: "Integrations", url: "#" },
+        { text: "Browse Tutors", url: "/tutors" },
+        { text: "Become a Tutor", url: "/register" },
+        { text: "How it Works", url: "#" },
         { text: "Pricing", url: "#" },
       ],
     },
     {
-      title: "Company",
+      title: "Subjects",
       links: [
-        { text: "About", url: "#" },
-        { text: "Team", url: "#" },
-        { text: "Blog", url: "#" },
-        { text: "Careers", url: "#" },
-        { text: "Contact", url: "#" },
-        { text: "Privacy", url: "#" },
+        { text: "Programming", url: "/tutors?search=Programming" },
+        { text: "Design", url: "/tutors?search=Design" },
+        { text: "Languages", url: "/tutors?search=Languages" },
+        { text: "Business", url: "/tutors?search=Business" },
       ],
     },
     {
-      title: "Resources",
+      title: "Support",
       links: [
-        { text: "Help", url: "#" },
-        { text: "Sales", url: "#" },
-        { text: "Advertise", url: "#" },
+        { text: "Help Center", url: "#" },
+        { text: "Safety", url: "#" },
+        { text: "Contact Us", url: "#" },
       ],
     },
     {
-      title: "Social",
+      title: "Legal",
       links: [
-        { text: "Twitter", url: "#" },
-        { text: "Instagram", url: "#" },
-        { text: "LinkedIn", url: "#" },
+        { text: "Privacy Policy", url: "#" },
+        { text: "Terms of Service", url: "#" },
+        { text: "Cookie Policy", url: "#" },
       ],
     },
   ],
-  copyright = "© 2024 Shadcnblocks.com. All rights reserved.",
+  copyright = "© 2026 SkillBridge. All rights reserved.",
   bottomLinks = [
-    { text: "Terms and Conditions", url: "#" },
-    { text: "Privacy Policy", url: "#" },
+    { text: "Security", url: "#" },
+    { text: "Status", url: "#" },
   ],
 }: Footer2Props) => {
   return (
-    <section className={cn("py-32", className)}>
-      <div className="container">
+    <section className={cn("py-20 border-t bg-muted/30", className)}>
+      <div className="max-w-7xl mx-auto px-4">
         <footer>
           <div className="grid grid-cols-2 gap-8 lg:grid-cols-6">
             <div className="col-span-2 mb-8 lg:mb-0">
@@ -110,7 +107,7 @@ const Footer2 = ({
                       key={linkIdx}
                       className="font-medium hover:text-primary"
                     >
-                      <a href={link.url}>{link.text}</a>
+                      <Link href={link.url}>{link.text}</Link>
                     </li>
                   ))}
                 </ul>
@@ -122,7 +119,7 @@ const Footer2 = ({
             <ul className="flex gap-4">
               {bottomLinks.map((link, linkIdx) => (
                 <li key={linkIdx} className="underline hover:text-primary">
-                  <a href={link.url}>{link.text}</a>
+                  <Link href={link.url}>{link.text}</Link>
                 </li>
               ))}
             </ul>

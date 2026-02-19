@@ -14,19 +14,31 @@ export const bookingService = {
   },
 
   async getAll(): Promise<{ data: Booking[] }> {
-    const res = await fetch(`${API_BASE}/api/bookings`, { cache: "no-store" });
+    const { cookies } = await import("next/headers");
+    const cookieStore = await cookies();
+    const res = await fetch(`${API_BASE}/api/bookings`, { 
+      cache: "no-store",
+      headers: {
+        Cookie: cookieStore.toString(),
+      },
+    });
     if (!res.ok) throw new Error("Failed to fetch all bookings");
     const data = await res.json();
-    return { data: Array.isArray(data) ? data : [] };
+    return { data: Array.isArray(data.data) ? data.data : Array.isArray(data) ? data : [] };
   },
 
   async getMyBookings(): Promise<{ data: Booking[] }> {
+    const { cookies } = await import("next/headers");
+    const cookieStore = await cookies();
     const res = await fetch(`${API_BASE}/api/bookings/me`, {
       cache: "no-store",
+      headers: {
+        Cookie: cookieStore.toString(),
+      },
     });
     if (!res.ok) throw new Error("Failed to fetch my bookings");
     const data = await res.json();
-    return { data: Array.isArray(data) ? data : [] };
+    return { data: Array.isArray(data.data) ? data.data : Array.isArray(data) ? data : [] };
   },
 
   async cancelMyBooking(id: string) {
@@ -38,12 +50,17 @@ export const bookingService = {
   },
 
   async getTutorSessions(): Promise<{ data: Booking[] }> {
+    const { cookies } = await import("next/headers");
+    const cookieStore = await cookies();
     const res = await fetch(`${API_BASE}/api/bookings/tutor/me`, {
       cache: "no-store",
+      headers: {
+        Cookie: cookieStore.toString(),
+      },
     });
     if (!res.ok) throw new Error("Failed to fetch tutor sessions");
     const data = await res.json();
-    return { data: Array.isArray(data) ? data : [] };
+    return { data: Array.isArray(data.data) ? data.data : Array.isArray(data) ? data : [] };
   },
 
   async completeSession(id: string) {

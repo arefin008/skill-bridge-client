@@ -30,7 +30,7 @@ interface Footer2Props {
 
 const Footer2 = ({
   logo = {
-    src: "https://deifkwefumgah.cloudfront.net/shadcnblocks/block/block-1.svg",
+    src: "/skillbridge-logo.png",
     alt: "SkillBridge Logo",
     title: "SkillBridge",
     url: "/",
@@ -41,14 +41,13 @@ const Footer2 = ({
     {
       title: "Platform",
       links: [
+        { text: "Home", url: "/" },
         { text: "Browse Tutors", url: "/tutors" },
-        { text: "Become a Tutor", url: "/register" },
-        { text: "How it Works", url: "#" },
-        { text: "Pricing", url: "#" },
+        { text: "About Us", url: "/about" },
       ],
     },
     {
-      title: "Subjects",
+      title: "Subject Categories",
       links: [
         { text: "Programming", url: "/tutors?search=Programming" },
         { text: "Design", url: "/tutors?search=Design" },
@@ -59,24 +58,22 @@ const Footer2 = ({
     {
       title: "Support",
       links: [
-        { text: "Help Center", url: "#" },
-        { text: "Safety", url: "#" },
-        { text: "Contact Us", url: "#" },
+        { text: "Support Center", url: "/support" },
+        { text: "Contact Us", url: "/support" },
       ],
     },
     {
       title: "Legal",
       links: [
-        { text: "Privacy Policy", url: "#" },
-        { text: "Terms of Service", url: "#" },
-        { text: "Cookie Policy", url: "#" },
+        { text: "Privacy Policy", url: "/privacy" },
+        { text: "Terms of Service", url: "/terms" },
       ],
     },
   ],
   copyright = "© 2026 SkillBridge. All rights reserved.",
   bottomLinks = [
-    { text: "Security", url: "#" },
-    { text: "Status", url: "#" },
+    { text: "Login", url: "/login" },
+    { text: "Register", url: "/register" },
   ],
 }: Footer2Props) => {
   return (

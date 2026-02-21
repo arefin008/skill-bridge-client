@@ -1,6 +1,8 @@
 import { userService } from "@/services/user.service";
 import StudentProfileClient from "@/components/modules/students/StudentProfileClient";
 
+export const dynamic = "force-dynamic";
+
 export default async function ProfilePage() {
   const sessionRes = await userService.getSession();
   const user = sessionRes.data?.user;

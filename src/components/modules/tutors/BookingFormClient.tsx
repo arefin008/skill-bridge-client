@@ -7,6 +7,7 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Tutor } from "@/types";
 import { Calendar } from "lucide-react";
+import { authClient } from "@/lib/auth-client";
 
 interface Props {
   tutor: Tutor;
@@ -40,6 +41,14 @@ export default function BookingFormClient({ tutor }: Props) {
     }
 
     if (!selectedSlot) return;
+
+    // Check if user is authenticated before allowing booking
+    const sessionRes = await authClient.getSession();
+    if (!sessionRes.data?.user) {
+      toast.error("Please login first to confirm your booking");
+      router.push("/login");
+      return;
+    }
 
     setLoading(true);
     const toastId = toast.loading("Booking session...");

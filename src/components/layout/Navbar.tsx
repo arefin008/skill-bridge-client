@@ -60,7 +60,7 @@ interface Navbar1Props {
 const Navbar = ({
   logo = {
     url: "/",
-    src: "https://deifkwefumgah.cloudfront.net/shadcnblocks/block/logos/shadcnblockscom-icon.svg",
+    src: "/skillbridge-logo.png",
     alt: "SkillBridge Logo",
     title: "SkillBridge",
   },

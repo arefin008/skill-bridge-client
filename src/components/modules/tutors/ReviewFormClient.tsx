@@ -12,7 +12,7 @@ interface Props {
   onSuccess?: () => void;
 }
 
-export default function ReviewFormClient({ tutorProfileId, onSuccess }: Props) {
+export default function ReviewFormClient({ tutorProfileId, bookingId, onSuccess }: Props) {
   const router = useRouter();
   const [rating, setRating] = useState(5);
   const [comment, setComment] = useState("");
@@ -29,7 +29,7 @@ export default function ReviewFormClient({ tutorProfileId, onSuccess }: Props) {
         headers: { "Content-Type": "application/json" },
         credentials: "include",
         body: JSON.stringify({
-          tutorProfileId,
+          bookingId,
           rating,
           comment,
         }),
@@ -68,21 +68,22 @@ export default function ReviewFormClient({ tutorProfileId, onSuccess }: Props) {
         </Button>
       </div>
 
-      <div className="flex gap-1">
-        {[1, 2, 3, 4, 5].map((star) => (
-          <button
-            key={star}
-            type="button"
-            onClick={() => setRating(star)}
-            className="focus:outline-none transition-transform hover:scale-110"
-          >
-            <Star
-              className={`h-6 w-6 ${
-                star <= rating ? "fill-primary text-primary" : "text-muted-foreground"
-              }`}
-            />
-          </button>
-        ))}
+      <div className="flex gap-1 justify-center py-2">
+        {[1, 2, 3, 4, 5].map((star) => {
+          const isFull = rating >= star;
+
+          return (
+            <div key={star} className="relative flex items-center justify-center transition-transform hover:scale-110">
+              <button 
+                type="button" 
+                onClick={() => setRating(star)}
+                className="absolute inset-0 z-10 w-full h-full cursor-pointer"
+                aria-label={`${star} stars`}
+              />
+              <Star className={`h-8 w-8 ${isFull ? "fill-primary text-primary" : "text-muted-foreground"}`} />
+            </div>
+          );
+        })}
       </div>
 
       <textarea

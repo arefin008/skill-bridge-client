@@ -14,6 +14,17 @@ export async function proxy(request: NextRequest) {
       return NextResponse.redirect(new URL("/login", request.url));
     }
 
+    // Immediately kick out banned users who managed to login
+    // This forcibly prevents any BANNED user from accessing protected areas
+    if (user.status === "BANNED") {
+      // Create a redirect response that routes context to an error page or login with warning
+      const redirectResponse = NextResponse.redirect(new URL("/login?error=banned", request.url));
+      
+      // Optionally we can explicitly clear the better-auth cookie here if desired,
+      // but the redirect back to an unauthenticated context is the most crucial requirement.
+      return redirectResponse;
+    }
+
     const userRole = user.role;
 
     // Role-based routing logic

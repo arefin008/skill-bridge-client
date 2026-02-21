@@ -67,12 +67,12 @@ const Navbar = ({
   menu = [
     { title: "Home", url: "/" },
     { title: "Browse Tutors", url: "/tutors" },
-    { title: "About Us", url: "#" },
-    { title: "Support", url: "#" },
+    { title: "About Us", url: "/about" },
+    { title: "Support", url: "/support" },
   ],
   auth = {
     login: { title: "Login", url: "/login" },
-    signup: { title: "Get Started", url: "/register" },
+    signup: { title: "Register", url: "/register" },
   },
   className,
 }: Navbar1Props) => {

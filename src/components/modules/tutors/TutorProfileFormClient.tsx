@@ -5,6 +5,7 @@
 import { createTutorProfile, updateTutorProfile } from "@/actions/tutor.action";
 import { Button } from "@/components/ui/button";
 import { useRouter } from "next/navigation";
+import { authClient } from "@/lib/auth-client";
 import {
   Card,
   CardContent,
@@ -30,6 +31,7 @@ const tutorSchema = z.object({
   hourlyRate: z.number().positive("Hourly rate must be positive"),
   experience: z.number().min(1, "Must have at least 1 year of experience"),
   categories: z.array(z.string()).min(1, "Select at least one category"),
+  image: z.string().url("Must be a valid URL").optional().or(z.literal("")),
 });
 
 type FormType = z.infer<typeof tutorSchema>;
@@ -38,9 +40,10 @@ interface Props {
   mode: "create" | "update";
   defaultValues?: Partial<FormType>;
   allCategories?: Category[];
+  userImageUrl?: string;
 }
 
-export function TutorProfileFormClient({ mode, defaultValues, allCategories = [] }: Props) {
+export function TutorProfileFormClient({ mode, defaultValues, allCategories = [], userImageUrl }: Props) {
   const router = useRouter();
   const form = useForm({
     defaultValues: {
@@ -48,6 +51,7 @@ export function TutorProfileFormClient({ mode, defaultValues, allCategories = []
       hourlyRate: defaultValues?.hourlyRate || 0,
       experience: defaultValues?.experience || 1,
       categories: defaultValues?.categories || [],
+      image: defaultValues?.image || userImageUrl || "",
     } as FormType,
     validators: { onSubmit: tutorSchema },
     onSubmit: async ({ value }) => {
@@ -65,6 +69,10 @@ export function TutorProfileFormClient({ mode, defaultValues, allCategories = []
       console.log("Submitting tutor profile data:", data);
 
       try {
+        if (value.image && value.image !== userImageUrl) {
+          await authClient.updateUser({ image: value.image });
+        }
+
         const res =
           mode === "create"
             ? await createTutorProfile(data as any)
@@ -109,6 +117,26 @@ export function TutorProfileFormClient({ mode, defaultValues, allCategories = []
           className="space-y-6"
         >
           <FieldGroup>
+            {/* Image URL Field */}
+            <form.Field
+              name="image"
+              children={(field) => {
+                const invalid = field.state.meta.isTouched && !field.state.meta.isValid;
+                return (
+                  <Field data-invalid={invalid}>
+                    <FieldLabel htmlFor={field.name}>Profile Image URL</FieldLabel>
+                    <Input
+                      id={field.name}
+                      value={field.state.value}
+                      onChange={(e) => field.handleChange(e.target.value)}
+                      placeholder="https://example.com/your-image.jpg"
+                    />
+                    {invalid && <FieldError errors={field.state.meta.errors} />}
+                  </Field>
+                );
+              }}
+            />
+
             {/* Bio Field */}
             <form.Field
               name="bio"

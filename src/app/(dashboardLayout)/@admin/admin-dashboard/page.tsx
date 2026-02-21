@@ -55,26 +55,33 @@ export default async function AdminDashboard() {
   ];
 
   return (
-    <div className="space-y-8">
-      <div>
-        <h1 className="text-3xl font-bold">Admin Dashboard</h1>
-        <p className="mt-1 text-muted-foreground">
-          Platform overview and statistics.
-        </p>
+    <div className="space-y-8 animate-in fade-in slide-in-from-bottom-4 duration-500">
+      <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
+        <div>
+          <h1 className="text-3xl font-bold tracking-tight">Admin Dashboard</h1>
+          <p className="mt-1 text-muted-foreground">
+            Platform overview, operations and statistics.
+          </p>
+        </div>
       </div>
 
-      <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
-        {stats.map((stat) => (
-          <Card key={stat.title}>
-            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-              <CardTitle className="text-sm font-medium">{stat.title}</CardTitle>
-              <stat.icon className={`h-4 w-4 ${stat.color}`} />
+      <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-4">
+        {stats.map((stat, i) => (
+          <Card 
+            key={stat.title} 
+            className="relative overflow-hidden border-none shadow-md hover:shadow-lg transition-all duration-300"
+          >
+            <div className={`absolute right-0 top-0 opacity-10 p-4 shrink-0 transition-transform group-hover:scale-110 ${stat.color}`}>
+              <stat.icon className="h-24 w-24" />
+            </div>
+            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2 relative z-10">
+              <CardTitle className="text-sm font-semibold tracking-wider uppercase text-muted-foreground">{stat.title}</CardTitle>
             </CardHeader>
-            <CardContent>
-              <div className={`text-3xl font-bold ${stat.color}`}>
+            <CardContent className="relative z-10 space-y-1">
+              <div className={`text-4xl font-extrabold ${stat.color}`}>
                 {stat.value}
               </div>
-              <p className="text-xs text-muted-foreground mt-1">{stat.desc}</p>
+              <p className="text-sm font-medium text-muted-foreground/80">{stat.desc}</p>
             </CardContent>
           </Card>
         ))}

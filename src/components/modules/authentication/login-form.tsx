@@ -18,8 +18,10 @@ import {
 import { Input } from "@/components/ui/input";
 import { authClient } from "@/lib/auth-client";
 import { useForm } from "@tanstack/react-form";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import { toast } from "sonner";
+import { AlertCircle } from "lucide-react";
+import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import * as z from "zod";
 
 const formSchema = z.object({
@@ -29,6 +31,9 @@ const formSchema = z.object({
 
 export function LoginForm({ ...props }: React.ComponentProps<typeof Card>) {
   const router = useRouter();
+  const searchParams = useSearchParams();
+  const errorParam = searchParams.get("error");
+  
   const handleGoogleLogin = async () => {
     await authClient.signIn.social({
       provider: "google",
@@ -80,12 +85,21 @@ export function LoginForm({ ...props }: React.ComponentProps<typeof Card>) {
   return (
     <Card {...props}>
       <CardHeader>
-        <CardTitle>Create an account</CardTitle>
+        <CardTitle>Welcome Back</CardTitle>
         <CardDescription>
-          Enter your information below to create your account
+          Enter your information below to securely log into your account.
         </CardDescription>
       </CardHeader>
-      <CardContent>
+      <CardContent className="space-y-6">
+        {errorParam === "banned" && (
+          <Alert variant="destructive">
+            <AlertCircle className="h-4 w-4" />
+            <AlertTitle>Account Suspended</AlertTitle>
+            <AlertDescription>
+              Your account has been banned due to policy violations. You have been disconnected. Please contact support if you believe this is an error.
+            </AlertDescription>
+          </Alert>
+        )}
         <form
           id="login-form"
           onSubmit={(e) => {

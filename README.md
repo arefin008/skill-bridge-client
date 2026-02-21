@@ -41,7 +41,7 @@ SkillBridge is a modern, high-performance tutor marketplace built for the next g
 ## ⚙️ Getting Started
 
 ### 1. Prerequisite
-Ensure you have the backend API running. You can find the backend repository at [skill-bridge](https://github.com/arefin008/skill-bridge).
+Ensure you have the backend API running. You can find the backend repository at [skill-bridge](https://github.com/arefin008/skill-bridge-application).
 
 ### 2. Environment Variables
 Create a `.env` file in the root directory and add the following:

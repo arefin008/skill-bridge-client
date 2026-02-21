@@ -120,7 +120,7 @@ export default async function AdminUsersPage({ searchParams }: Props) {
                   className="shadow-sm font-medium"
                 >
                   {page > 1 ? (
-                    <Link href={`/users?page=${page - 1}`} className="flex items-center">
+                    <Link href={`/admin-dashboard/users?page=${page - 1}`} className="flex items-center">
                       <ChevronLeft className="h-4 w-4 mr-1" /> Previous
                     </Link>
                   ) : (
@@ -137,7 +137,7 @@ export default async function AdminUsersPage({ searchParams }: Props) {
                   className="shadow-sm font-medium"
                 >
                   {page < meta.totalPages ? (
-                    <Link href={`/users?page=${page + 1}`} className="flex items-center">
+                    <Link href={`/admin-dashboard/users?page=${page + 1}`} className="flex items-center">
                       Next <ChevronRight className="h-4 w-4 ml-1" />
                     </Link>
                   ) : (

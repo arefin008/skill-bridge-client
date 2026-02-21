@@ -36,7 +36,8 @@ export default function ReviewFormClient({ tutorProfileId, bookingId, onSuccess 
       });
 
       if (!response.ok) {
-        throw new Error("Failed to submit review");
+        const errorData = await response.json().catch(() => ({}));
+        throw new Error(errorData.message || "Failed to submit review");
       }
 
       toast.success("Review submitted! Thank you.", { id: toastId });

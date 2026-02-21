@@ -40,6 +40,15 @@ export default async function TutorDashboard() {
         </p>
       </div>
 
+      <div className="flex flex-wrap gap-4">
+          <Button asChild variant="outline" className="border-primary/20 hover:bg-primary/5 font-bold shadow-sm">
+              <Link href="/tutor-dashboard/profile/preview" className="flex items-center gap-2">
+                  <Star className="h-4 w-4 text-yellow-500" />
+                  View Public Profile Preview
+              </Link>
+          </Button>
+      </div>
+
       {!tutor && (
         <Card className="border-primary/50 bg-primary/5">
           <CardContent className="flex flex-col md:flex-row items-center justify-between gap-4 py-6">

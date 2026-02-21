@@ -40,13 +40,13 @@ export async function middleware(request: NextRequest) {
 
     // Role-based routing logic
     if (userRole === UserRole.admin) {
-      if (pathname.startsWith("/dashboard") || pathname.startsWith("/tutor")) {
+      if (pathname.startsWith("/dashboard") || pathname.startsWith("/tutor-dashboard")) {
         return NextResponse.redirect(new URL("/admin-dashboard", request.url));
       }
     } else if (userRole === UserRole.student) {
       if (
         pathname.startsWith("/admin-dashboard") ||
-        pathname.startsWith("/tutor")
+        pathname.startsWith("/tutor-dashboard")
       ) {
         return NextResponse.redirect(new URL("/dashboard", request.url));
       }

@@ -86,7 +86,7 @@ export default function StudentProfileClient({ user }: Props) {
             <Shield className="h-32 w-32" />
           </div>
           <CardHeader className="text-center pb-2 relative z-10">
-            <div className="mx-auto relative group">
+            <div className="mx-auto relative group h-32 w-32">
               {user.image || image ? (
                 // eslint-disable-next-line @next/next/no-img-element
                 <Image
@@ -94,6 +94,7 @@ export default function StudentProfileClient({ user }: Props) {
                   alt={user.name}
                   fill
                   className="h-32 w-32 rounded-full object-cover border-4 border-background shadow-lg mx-auto"
+                  unoptimized
                 />
               ) : (
                 <div className="h-32 w-32 rounded-full border-4 border-background shadow-lg mx-auto bg-primary/10 flex items-center justify-center text-4xl font-bold text-primary">

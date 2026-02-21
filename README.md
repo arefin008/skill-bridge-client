@@ -1,36 +1,86 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# 🎓 SkillBridge
 
-## Getting Started
+**Bridging the gap between expert tutors and eager learners.**
 
-First, run the development server:
+SkillBridge is a modern, high-performance tutor marketplace built for the next generation of online education. It features a robust role-based dashboard system, seamless authentication, and a professional interface for discovering and managing educational sessions.
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+![SkillBridge Landing Page](https://skill-bridge-client-mu.vercel.app/og-image.png) *(Placeholder if you have an image)*
+
+---
+
+## 🚀 Key Features
+
+### 👥 Role-Based Dashboards
+- **Students**: Manage bookings, track learning progress, and leave detailed reviews for tutors.
+- **Tutors**: Build a professional profile, set availability, manage upcoming sessions, and preview their public footprint.
+- **Admins**: Full control over user management, platform statistics, and category curation.
+
+### 🛡️ Advanced Authentication
+- **Secure Sessions**: Powered by `better-auth` with cross-domain cookie persistence fixes.
+- **Social Login**: Integrated Google OAuth for friction-less onboarding.
+- **Email Verification**: Professional automated emails using high-contrast branding.
+
+### 🍱 Professional UI/UX
+- **Dynamic Stats**: Real-time platform statistics on the landing page.
+- **Filterable Search**: Debounced tutor discovery based on ratings and expertise.
+- **Responsive Design**: Built with Tailwind CSS and shadcn/ui for a premium, mobile-first experience.
+
+---
+
+## 🛠️ Built With
+
+- **Framework**: [Next.js 16 (App Router)](https://nextjs.org/)
+- **Runtime**: [Experimental Edge Proxy](https://nextjs.org/docs/app/building-your-application/routing/middleware)
+- **Authentication**: [Better-Auth](https://www.better-auth.com/)
+- **Styling**: [Tailwind CSS 4](https://tailwindcss.com/)
+- **Components**: [shadcn/ui](https://ui.shadcn.com/)
+- **Form Management**: [@tanstack/react-form](https://tanstack.com/form) + Zod
+
+---
+
+## ⚙️ Getting Started
+
+### 1. Prerequisite
+Ensure you have the backend API running. You can find the backend repository at [skill-bridge](https://github.com/arefin008/skill-bridge).
+
+### 2. Environment Variables
+Create a `.env` file in the root directory and add the following:
+
+```env
+NEXT_PUBLIC_APP_URL="http://localhost:3000"
+NEXT_PUBLIC_API_URL="http://localhost:5000"
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+### 3. Installation & Run
+```bash
+# Install dependencies
+pnpm install
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+# Run the development server
+pnpm dev
+```
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+---
 
-## Learn More
+## 🌐 Deployment
 
-To learn more about Next.js, take a look at the following resources:
+This project is optimized for **Vercel**. 
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+### Critical Vercel Configuration
+To ensure session persistence across domains, you MUST configure the following Environment Variables in your Vercel Dashboard:
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+| Variable | Description |
+| :--- | :--- |
+| `NEXT_PUBLIC_APP_URL` | Your frontend production URL |
+| `NEXT_PUBLIC_API_URL` | Your backend production API URL |
 
-## Deploy on Vercel
+*Note: The project uses a `proxy.ts` convention (Next.js 16) for routing protection.*
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+---
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+## 📄 License
+This project is licensed under the MIT License.
+
+---
+
+**Developed with ❤️ by [Arefin Rounok](https://github.com/arefin008)**

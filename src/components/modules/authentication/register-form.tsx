@@ -19,6 +19,7 @@ import { Input } from "@/components/ui/input";
 import { authClient } from "@/lib/auth-client";
 import { useForm } from "@tanstack/react-form";
 import { toast } from "sonner";
+import { env } from "@/env";
 import * as z from "zod";
 
 const formSchema = z.object({
@@ -32,7 +33,7 @@ export function RegisterForm({ ...props }: React.ComponentProps<typeof Card>) {
   const handleGoogleLogin = async () => {
     await authClient.signIn.social({
       provider: "google",
-      callbackURL: "http://localhost:3000",
+      callbackURL: env.NEXT_PUBLIC_APP_URL,
     });
   };
 
@@ -74,7 +75,7 @@ export function RegisterForm({ ...props }: React.ComponentProps<typeof Card>) {
       <CardContent>
         <form
           id="login-form"
-          onSubmit={(e) => {
+          onSubmit={(e: React.FormEvent) => {
             e.preventDefault();
             form.handleSubmit();
           }}
@@ -94,7 +95,7 @@ export function RegisterForm({ ...props }: React.ComponentProps<typeof Card>) {
                       id={field.name}
                       name={field.name}
                       value={field.state.value}
-                      onChange={(e) => field.handleChange(e.target.value)}
+                      onChange={(e: React.ChangeEvent<HTMLInputElement>) => field.handleChange(e.target.value)}
                     />
                     {isInvalid && (
                       <FieldError errors={field.state.meta.errors} />
@@ -117,7 +118,7 @@ export function RegisterForm({ ...props }: React.ComponentProps<typeof Card>) {
                       id={field.name}
                       name={field.name}
                       value={field.state.value}
-                      onChange={(e) => field.handleChange(e.target.value)}
+                      onChange={(e: React.ChangeEvent<HTMLInputElement>) => field.handleChange(e.target.value)}
                     />
                     {isInvalid && (
                       <FieldError errors={field.state.meta.errors} />
@@ -140,7 +141,7 @@ export function RegisterForm({ ...props }: React.ComponentProps<typeof Card>) {
                       id={field.name}
                       name={field.name}
                       value={field.state.value}
-                      onChange={(e) => field.handleChange(e.target.value)}
+                      onChange={(e: React.ChangeEvent<HTMLInputElement>) => field.handleChange(e.target.value)}
                     />
                     {isInvalid && (
                       <FieldError errors={field.state.meta.errors} />
@@ -163,7 +164,7 @@ export function RegisterForm({ ...props }: React.ComponentProps<typeof Card>) {
                       name={field.name}
                       className="h-10 rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2"
                       value={field.state.value}
-                      onChange={(e) => field.handleChange(e.target.value as "STUDENT" | "TUTOR")}
+                      onChange={(e: React.ChangeEvent<HTMLSelectElement>) => field.handleChange(e.target.value as "STUDENT" | "TUTOR")}
                     >
                       <option value="STUDENT">Student (looking for tutors)</option>
                       <option value="TUTOR">Tutor (wanting to teach)</option>

@@ -6,7 +6,7 @@ const UserRole = {
   tutor: "TUTOR",
 };
 
-export async function middleware(request: NextRequest) {
+export async function proxy(request: NextRequest) {
   const pathname = request.nextUrl.pathname;
 
   try {
@@ -14,6 +14,7 @@ export async function middleware(request: NextRequest) {
     
     // If no user session cookie, immediately redirect to login
     if (!sessionToken) {
+      console.log("No session token found in request cookies. Redirecting to /login.");
       return NextResponse.redirect(new URL("/login", request.url));
     }
 
@@ -23,6 +24,11 @@ export async function middleware(request: NextRequest) {
         cookie: `better-auth.session_token=${sessionToken}`,
       },
     });
+
+    if (!sessionRes.ok) {
+        console.error("Middleware session fetch failed:", sessionRes.status, sessionRes.statusText);
+        throw new Error("Session fetch failed");
+    }
 
     const sessionData = await sessionRes.json();
     const user = sessionData?.user;
@@ -69,6 +75,5 @@ export async function middleware(request: NextRequest) {
 }
 
 export const config = {
-  matcher: ["/dashboard/:path*", "/admin-dashboard/:path*", "/tutor/:path*"],
-  runtime: "experimental-edge",
+  matcher: ["/dashboard/:path*", "/admin-dashboard/:path*", "/tutor-dashboard/:path*"],
 };

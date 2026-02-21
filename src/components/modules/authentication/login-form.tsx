@@ -17,9 +17,11 @@ import {
 } from "@/components/ui/field";
 import { Input } from "@/components/ui/input";
 import { authClient } from "@/lib/auth-client";
+import { UserRole } from "@/constants/roles";
 import { useForm } from "@tanstack/react-form";
 import { useRouter, useSearchParams } from "next/navigation";
 import { toast } from "sonner";
+import { env } from "@/env";
 import { AlertCircle } from "lucide-react";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import * as z from "zod";
@@ -37,7 +39,7 @@ export function LoginForm({ ...props }: React.ComponentProps<typeof Card>) {
   const handleGoogleLogin = async () => {
     await authClient.signIn.social({
       provider: "google",
-      callbackURL: "http://localhost:3000",
+      callbackURL: env.NEXT_PUBLIC_APP_URL,
     });
   };
 
@@ -52,30 +54,33 @@ export function LoginForm({ ...props }: React.ComponentProps<typeof Card>) {
     onSubmit: async ({ value }) => {
       const toastId = toast.loading("Logging in");
       try {
-        const { error } = await authClient.signIn.email(value);
+        const { data: session, error } = await authClient.signIn.email(value);
 
         if (error) {
           toast.error(error.message, { id: toastId });
           return;
         }
 
-        const session = await authClient.getSession();
-        const role = (session.data?.user as any)?.role;
+        const role = (session?.user as any)?.role || null;
 
-        toast.success("User Logged in Successfully", { id: toastId });
-
-        // Redirect based on role
-        if (role === "ADMIN") {
-          router.push("/admin-dashboard");
-        } else if (role === "STUDENT") {
-          router.push("/dashboard");
-        } else if (role === "TUTOR") {
-          router.push("/tutor-dashboard/dashboard");
-        } else {
-          router.push("/");
+        if (!role) {
+          toast.success("Logged in successfully. Redirecting...", { id: toastId });
+          window.location.href = "/";
+          return;
         }
 
-        router.refresh();
+        toast.success(`Logged in as ${role}. Redirecting...`, { id: toastId });
+
+        // Force a full reload to ensure middleware and server components pick up the new session
+        if (role === UserRole.admin) {
+          window.location.href = "/admin-dashboard";
+        } else if (role === UserRole.student) {
+          window.location.href = "/dashboard";
+        } else if (role === UserRole.tutor) {
+          window.location.href = "/tutor-dashboard/dashboard";
+        } else {
+          window.location.href = "/";
+        }
       } catch (err: unknown) {
         toast.error("Something went wrong, please try again.", { id: toastId });
       }
@@ -102,7 +107,7 @@ export function LoginForm({ ...props }: React.ComponentProps<typeof Card>) {
         )}
         <form
           id="login-form"
-          onSubmit={(e) => {
+          onSubmit={(e: React.FormEvent) => {
             e.preventDefault();
             form.handleSubmit();
           }}
@@ -122,7 +127,7 @@ export function LoginForm({ ...props }: React.ComponentProps<typeof Card>) {
                       id={field.name}
                       name={field.name}
                       value={field.state.value}
-                      onChange={(e) => field.handleChange(e.target.value)}
+                      onChange={(e: React.ChangeEvent<HTMLInputElement>) => field.handleChange(e.target.value)}
                     />
                     {isInvalid && (
                       <FieldError errors={field.state.meta.errors} />
@@ -145,7 +150,7 @@ export function LoginForm({ ...props }: React.ComponentProps<typeof Card>) {
                       id={field.name}
                       name={field.name}
                       value={field.state.value}
-                      onChange={(e) => field.handleChange(e.target.value)}
+                      onChange={(e: React.ChangeEvent<HTMLInputElement>) => field.handleChange(e.target.value)}
                     />
                     {isInvalid && (
                       <FieldError errors={field.state.meta.errors} />

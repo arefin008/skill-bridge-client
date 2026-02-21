@@ -23,17 +23,21 @@ export default function TutorCard({ tutor }: TutorCardProps) {
     <Card className="group relative h-full overflow-hidden border border-border/40 bg-card hover:shadow-2xl hover:shadow-primary/5 transition-all duration-500 rounded-2xl flex flex-col">
       {/* Image Container with Overlay */}
       <div className="relative h-64 w-full overflow-hidden bg-muted">
-        {user.image ? (
+        {user?.image ? (
           <Image
             src={user.image}
             alt={user.name}
             fill
             className="object-cover transition-transform duration-700 group-hover:scale-110"
+            unoptimized
           />
         ) : (
-          <div className="flex h-full w-full items-center justify-center bg-primary/5 text-primary/40 font-black text-4xl">
-            {user.name.charAt(0)}
-          </div>
+          <Image
+            src={`https://ui-avatars.com/api/?name=${encodeURIComponent(user?.name || "Tutor")}&background=random&size=512&bold=true`}
+            alt={user?.name || "Tutor"}
+            fill
+            className="object-cover transition-transform duration-700 group-hover:scale-110"
+          />
         )}
         
         {/* Floating Badges */}

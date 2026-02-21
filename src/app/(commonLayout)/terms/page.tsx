@@ -1,3 +1,5 @@
+import Link from "next/link";
+
 export const metadata = {
   title: "Terms of Service | SkillBridge",
   description: "Terms of Service of SkillBridge",
@@ -59,7 +61,7 @@ export default function TermsOfServicePage() {
         <section className="bg-muted p-6 rounded-lg mt-12 border">
           <h2 className="text-xl font-bold mb-2">7. Contact Information</h2>
           <p className="mb-0">
-            For critical legal inquiries or necessary clarifications regarding these explicit Terms of Service, please formally direct communication to our Legal Department at <a href="mailto:legal@skillbridge.com" className="text-primary hover:underline font-semibold">legal@skillbridge.com</a>.
+            For critical legal inquiries or necessary clarifications regarding these explicit Terms of Service, please formally direct communication to our Legal Department at <Link href="mailto:arefinrounok@gmail.com" className="text-primary hover:underline font-semibold">arefinrounok@gmail.com</Link>.
           </p>
         </section>
       </div>

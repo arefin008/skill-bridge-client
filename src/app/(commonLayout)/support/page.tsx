@@ -1,6 +1,7 @@
 import { Metadata } from 'next';
 import { Mail, Phone, MapPin, LifeBuoy } from 'lucide-react';
 import { Card, CardContent } from '@/components/ui/card';
+import Link from 'next/link';
 
 export const metadata: Metadata = {
   title: 'Support | Skill Bridge',
@@ -28,9 +29,9 @@ export default function SupportPage() {
             <p className="text-sm text-muted-foreground mb-4">
               Send us an email anytime and we'll get back to you within 24 hours.
             </p>
-            <a href="mailto:arefinrounok@gmail.com" className="font-medium text-primary hover:underline">
+            <Link href="mailto:arefinrounok@gmail.com" className="font-medium text-primary hover:underline">
               arefinrounok@gmail.com
-            </a>
+            </Link>
           </CardContent>
         </Card>
 
@@ -43,9 +44,9 @@ export default function SupportPage() {
             <p className="text-sm text-muted-foreground mb-4">
               Available Monday to Friday, 9am to 6pm EST.
             </p>
-            <a href="tel:+8801711111111" className="font-medium hover:underline">
+            <Link href="tel:+8801711111111" className="font-medium hover:underline">
               +8801711111111
-            </a>
+            </Link>
           </CardContent>
         </Card>
 

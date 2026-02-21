@@ -17,7 +17,6 @@ export default async function StudentDashboard() {
   const bookings = bookingsRes.data;
 
   const upcoming = bookings.filter((b) => b.status === "CONFIRMED").length;
-  const completed = bookings.filter((b) => b.status === "COMPLETED").length;
   const cancelled = bookings.filter((b) => b.status === "CANCELLED").length;
 
   return (
@@ -32,7 +31,7 @@ export default async function StudentDashboard() {
       </div>
 
       {/* Stats */}
-      <div className="grid gap-4 md:grid-cols-3">
+      <div className="grid gap-4 md:grid-cols-2">
         <Card>
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
             <CardTitle className="text-sm font-medium">Upcoming Sessions</CardTitle>
@@ -41,17 +40,6 @@ export default async function StudentDashboard() {
           <CardContent>
             <div className="text-3xl font-bold text-primary">{upcoming}</div>
             <p className="text-xs text-muted-foreground mt-1">Confirmed bookings</p>
-          </CardContent>
-        </Card>
-
-        <Card>
-          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Completed Sessions</CardTitle>
-            <CheckCircle2 className="h-4 w-4 text-green-500" />
-          </CardHeader>
-          <CardContent>
-            <div className="text-3xl font-bold text-green-600">{completed}</div>
-            <p className="text-xs text-muted-foreground mt-1">All time</p>
           </CardContent>
         </Card>
 

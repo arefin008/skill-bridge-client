@@ -28,7 +28,6 @@ export default async function TutorDashboard() {
   const sessions: Booking[] = sessionsRes.data;
 
   const upcoming = sessions.filter((s) => s.status === "CONFIRMED").length;
-  const completed = sessions.filter((s) => s.status === "COMPLETED").length;
 
   return (
     <div className="space-y-8">
@@ -63,7 +62,7 @@ export default async function TutorDashboard() {
       )}
 
       {/* Stats */}
-      <div className="grid gap-4 md:grid-cols-3">
+      <div className="grid gap-4 md:grid-cols-2">
         <Card>
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
             <CardTitle className="text-sm font-medium">Total Sessions</CardTitle>
@@ -83,17 +82,6 @@ export default async function TutorDashboard() {
           <CardContent>
             <div className="text-3xl font-bold text-primary">{upcoming}</div>
             <p className="text-xs text-muted-foreground mt-1">Confirmed bookings</p>
-          </CardContent>
-        </Card>
-
-        <Card>
-          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Completed</CardTitle>
-            <Star className="h-4 w-4 text-yellow-500" />
-          </CardHeader>
-          <CardContent>
-            <div className="text-3xl font-bold text-green-600">{completed}</div>
-            <p className="text-xs text-muted-foreground mt-1">Sessions taught</p>
           </CardContent>
         </Card>
       </div>

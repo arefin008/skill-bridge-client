@@ -1,3 +1,5 @@
+import Link from "next/link";
+
 export const metadata = {
   title: "Privacy Policy | SkillBridge",
   description: "Privacy Policy of SkillBridge",
@@ -62,7 +64,7 @@ export default function PrivacyPolicyPage() {
         <section className="bg-muted p-6 rounded-lg mt-12 border">
           <h2 className="text-xl font-bold mb-2">6. Contact Us</h2>
           <p className="mb-0">
-            If you have any questions, concerns, or legal inquiries regarding this highly structured Privacy Policy, please contact our dedicated Data Privacy Officer at <a href="mailto:privacy@skillbridge.com" className="text-primary hover:underline font-semibold">privacy@skillbridge.com</a>.
+            If you have any questions, concerns, or legal inquiries regarding this highly structured Privacy Policy, please contact our dedicated Data Privacy Officer at <Link href="mailto:arefinrounok@gmail.com" className="text-primary hover:underline font-semibold">arefinrounok@gmail.com</Link>.
           </p>
         </section>
       </div>

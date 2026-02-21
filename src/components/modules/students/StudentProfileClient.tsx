@@ -9,6 +9,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
 import { Mail, Shield, CalendarDays, Edit3, X, Save, Phone, Link as LinkIcon } from "lucide-react";
+import Image from "next/image";
 
 interface User {
   id: string;
@@ -88,9 +89,10 @@ export default function StudentProfileClient({ user }: Props) {
             <div className="mx-auto relative group">
               {user.image || image ? (
                 // eslint-disable-next-line @next/next/no-img-element
-                <img
+                <Image
                   src={isEditing ? image : (user.image || "")}
                   alt={user.name}
+                  fill
                   className="h-32 w-32 rounded-full object-cover border-4 border-background shadow-lg mx-auto"
                 />
               ) : (

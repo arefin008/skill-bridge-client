@@ -46,7 +46,7 @@ export default async function AdminDashboard() {
       color: "text-blue-600",
     },
     {
-      title: "Completed Sessions",
+      title: "Sessions Delivered",
       value: completedBookings,
       desc: "Successfully taught",
       icon: CheckCircle2,

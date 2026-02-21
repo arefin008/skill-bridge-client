@@ -1,7 +1,6 @@
 import TutorCard from "@/components/modules/homepage/GetAllTutor";
 import HeroSearchClient from "@/components/modules/homepage/HeroSearchClient";
 import { tutorService } from "@/services/tutor.service";
-import { bookingService } from "@/services/booking.service";
 import { Tutor } from "@/types";
 import Image from "next/image";
 import Link from "next/link";
@@ -10,26 +9,24 @@ import { Star, Users, CheckCircle } from "lucide-react";
 export const dynamic = "force-dynamic";
 
 export default async function Home() {
-  const [featuredTutorsRes, tutorsRes, allBookingsRes] = await Promise.all([
-    tutorService.getAll({ verifiedOnly: true, limit: 4 }),
-    tutorService.getAll({ limit: 8 }, { revalidate: 10 }),
-    bookingService.getAll().catch(() => ({ data: [] })),
-  ]);
-
-  // Fetch all tutors for stats if needed, or use the current list if it represents all
-  // For now, let's assume tutorsRes is for display, and we might need another for total count if pagination is used.
-  // Actually, I'll fetch total tutors count separately for accuracy if limit is 8.
   const allTutorsRes = await tutorService.getAll().catch(() => ({ data: [] }));
+  const allTutorsData = allTutorsRes.data;
 
-  const featuredTutors = featuredTutorsRes.data;
-  const tutors = tutorsRes.data;
-  const allTutors = allTutorsRes.data;
-  const totalBookings = allBookingsRes.data.length;
+  // 1. Filter Featured: rating >= 4, max 4
+  const featuredTutors = allTutorsData
+    .filter((t: Tutor) => t.avgRating >= 4)
+    .slice(0, 4);
+    
+  const featuredIds = new Set(featuredTutors.map((t: Tutor) => t.id));
+
+  // 2. All tutors for the Instructors section
+  const displayTutors = allTutorsData;
+  const hasMoreTutors = false; // Showing all, so no "View All" button needed here unless we paginate
 
   // Calculate stats
-  const activeTutorsCount = allTutors.length;
-  const avgRating = allTutors.length > 0 
-    ? allTutors.reduce((acc, t) => acc + (t.avgRating || 0), 0) / allTutors.length 
+  const activeTutorsCount = allTutorsData.length;
+  const avgRating = allTutorsData.length > 0 
+    ? allTutorsData.reduce((acc: number, t: Tutor) => acc + (t.avgRating || 0), 0) / allTutorsData.length 
     : 0;
 
   return (
@@ -45,7 +42,7 @@ export default async function Home() {
         />
         <div className="relative z-10 mx-auto max-w-4xl px-4 text-center text-white">
           <h1 className="mb-6 text-5xl md:text-7xl font-extrabold tracking-tight">
-            Connect with <span className="text-primary">Expert Tutors</span>
+            Connect with <span className="text-blue-400">Expert Tutors</span>
           </h1>
           <p className="mx-auto mb-10 max-w-2xl text-lg md:text-xl text-gray-200">
             Learn anything, anywhere. Browse verified tutors, book instant sessions, 
@@ -58,36 +55,26 @@ export default async function Home() {
 
       <div className="mx-auto max-w-7xl px-4 mt-[-60px] relative z-20">
         {/* Quick Stats */}
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-          <div className="bg-card p-6 rounded-2xl shadow-xl border flex items-center gap-4">
-            <div className="bg-primary/10 p-4 rounded-full">
-              <Users className="h-6 w-6 text-primary" />
+        <div className="flex flex-col md:flex-row items-stretch justify-center gap-6 w-full mx-auto">
+          <div className="bg-card p-6 rounded-2xl shadow-xl border flex items-center gap-6 flex-1 justify-center transition-all duration-300 hover:scale-[1.02] hover:shadow-2xl hover:border-primary/30 cursor-default group">
+            <div className="bg-primary/10 p-4 rounded-full flex-shrink-0 transition-colors group-hover:bg-primary/20">
+              <Users className="h-6 w-6 text-primary transition-transform duration-300 group-hover:scale-110" />
             </div>
             <div>
-              <p className="text-2xl font-bold">{activeTutorsCount}</p>
-              <p className="text-sm text-muted-foreground font-medium">Active Tutors</p>
+              <p className="text-3xl font-extrabold transition-colors group-hover:text-primary">{activeTutorsCount}</p>
+              <p className="text-sm font-semibold text-muted-foreground uppercase tracking-wider">Active Tutors</p>
             </div>
           </div>
-          <div className="bg-card p-6 rounded-2xl shadow-xl border flex items-center gap-4">
-            <div className="bg-yellow-500/10 p-4 rounded-full">
-              <Star className="h-6 w-6 text-yellow-600" />
+          <div className="bg-card p-6 rounded-2xl shadow-xl border flex items-center gap-6 flex-1 justify-center transition-all duration-300 hover:scale-[1.02] hover:shadow-2xl hover:border-yellow-500/30 cursor-default group">
+            <div className="bg-yellow-500/10 p-4 rounded-full flex-shrink-0 transition-colors group-hover:bg-yellow-500/20">
+              <Star className="h-6 w-6 text-yellow-600 transition-transform duration-300 group-hover:scale-110" />
             </div>
             <div>
-              <p className="text-2xl font-bold">{avgRating.toFixed(1)}/5</p>
-              <p className="text-sm text-muted-foreground font-medium">Average Rating</p>
-            </div>
-          </div>
-          <div className="bg-card p-6 rounded-2xl shadow-xl border flex items-center gap-4">
-            <div className="bg-green-500/10 p-4 rounded-full">
-              <CheckCircle className="h-6 w-6 text-green-600" />
-            </div>
-            <div>
-              <p className="text-2xl font-bold">{totalBookings}</p>
-              <p className="text-sm text-muted-foreground font-medium">Sessions Delivered</p>
+              <p className="text-3xl font-extrabold transition-colors group-hover:text-yellow-600">{avgRating.toFixed(1)}/5</p>
+              <p className="text-sm font-semibold text-muted-foreground uppercase tracking-wider">Average Rating</p>
             </div>
           </div>
         </div>
-
         {/* Featured Tutors */}
         {featuredTutors.length > 0 && (
           <section className="mt-24">
@@ -115,24 +102,26 @@ export default async function Home() {
              </div>
           </div>
 
-          {tutors.length === 0 ? (
+          {displayTutors.length === 0 ? (
              <div className="py-12 bg-muted/30 rounded-2xl text-center">
                 <p className="text-xl font-semibold">No tutors found</p>
                 <p className="text-muted-foreground mt-2">Check back later or browse all tutors.</p>
              </div>
           ) : (
             <div className="grid grid-cols-1 gap-8 md:grid-cols-2 lg:grid-cols-4">
-              {tutors.map((tutor: Tutor) => (
+              {displayTutors.map((tutor: Tutor) => (
                 <TutorCard key={tutor.id} tutor={tutor} />
               ))}
             </div>
           )}
           
-          <div className="mt-12 text-center">
-             <Link href="/tutors" className="inline-flex items-center justify-center rounded-md bg-primary px-8 py-3 text-sm font-bold text-primary-foreground shadow transition-colors hover:bg-primary/90 focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:pointer-events-none disabled:opacity-50">
-                View All Tutors
-             </Link>
-          </div>
+          {hasMoreTutors && (
+            <div className="mt-12 text-center">
+               <Link href="/tutors" className="inline-flex items-center justify-center rounded-md bg-primary px-8 py-3 text-sm font-bold text-primary-foreground shadow transition-colors hover:bg-primary/90 focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:pointer-events-none disabled:opacity-50">
+                  View All Tutors
+               </Link>
+            </div>
+          )}
         </section>
       </div>
     </div>

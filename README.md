@@ -4,7 +4,9 @@
 
 SkillBridge is a modern, high-performance tutor marketplace built for the next generation of online education. It features a robust role-based dashboard system, seamless authentication, and a professional interface for discovering and managing educational sessions.
 
-![SkillBridge Landing Page](https://skill-bridge-client-mu.vercel.app/og-image.png) *(Placeholder if you have an image)*
+![SkillBridge Landing Page](./Skill-bridge.png) 
+
+[Live URL of Fullstack Project](https://skill-bridge-client-mu.vercel.app/)
 
 ---
 
@@ -41,7 +43,7 @@ SkillBridge is a modern, high-performance tutor marketplace built for the next g
 ## ⚙️ Getting Started
 
 ### 1. Prerequisite
-Ensure you have the backend API running. You can find the backend repository at [skill-bridge](https://github.com/arefin008/skill-bridge).
+Ensure you have the backend API running. You can find the backend repository at [skill-bridge](https://github.com/arefin008/skill-bridge-application).
 
 ### 2. Environment Variables
 Create a `.env` file in the root directory and add the following:

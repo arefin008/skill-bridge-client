@@ -24,10 +24,9 @@ export default function ReviewFormClient({ tutorProfileId, bookingId, onSuccess 
     const toastId = toast.loading("Submitting review...");
 
     try {
-      const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/reviews`, {
+      const response = await fetch(`/api/reviews`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        credentials: "include",
         body: JSON.stringify({
           bookingId,
           rating,

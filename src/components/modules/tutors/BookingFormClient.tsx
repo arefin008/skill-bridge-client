@@ -54,10 +54,9 @@ export default function BookingFormClient({ tutor }: Props) {
     const toastId = toast.loading("Booking session...");
 
     try {
-      const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/bookings`, {
+      const response = await fetch(`/api/bookings`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        credentials: "include",
         body: JSON.stringify({
           tutorProfileId,
           categoryId: selectedCategoryId,

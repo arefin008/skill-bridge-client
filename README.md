@@ -6,6 +6,8 @@ SkillBridge is a modern, high-performance tutor marketplace built for the next g
 
 ![SkillBridge Landing Page](https://skill-bridge-client-mu.vercel.app/og-image.png) *(Placeholder if you have an image)*
 
+[Live URL of Fullstack Project](https://skill-bridge-client-mu.vercel.app/)
+
 ---
 
 ## 🚀 Key Features

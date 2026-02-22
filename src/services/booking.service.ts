@@ -78,8 +78,22 @@ export const bookingService = {
   },
 
   async cancelMyBooking(id: string) {
-    const res = await fetch(`${API_BASE}/api/bookings/${id}/cancel`, {
+    const isServer = typeof window === "undefined";
+
+    let url = `/api/bookings/${id}/cancel`;
+    let headers: Record<string, string> = {};
+
+    if (isServer) {
+      if (!API_BASE) throw new Error("API base URL is not defined");
+      url = `${API_BASE}/api/bookings/${id}/cancel`;
+      const { cookies } = await import("next/headers");
+      const cookieStore = await cookies();
+      headers["Cookie"] = cookieStore.toString();
+    }
+
+    const res = await fetch(url, {
       method: "PATCH",
+      headers,
     });
     if (!res.ok) throw new Error("Failed to cancel booking");
     return res.json();
@@ -109,8 +123,22 @@ export const bookingService = {
   },
 
   async completeSession(id: string) {
-    const res = await fetch(`${API_BASE}/api/bookings/${id}/complete`, {
+    const isServer = typeof window === "undefined";
+
+    let url = `/api/bookings/${id}/complete`;
+    let headers: Record<string, string> = {};
+
+    if (isServer) {
+      if (!API_BASE) throw new Error("API base URL is not defined");
+      url = `${API_BASE}/api/bookings/${id}/complete`;
+      const { cookies } = await import("next/headers");
+      const cookieStore = await cookies();
+      headers["Cookie"] = cookieStore.toString();
+    }
+
+    const res = await fetch(url, {
       method: "PATCH",
+      headers,
     });
     if (!res.ok) throw new Error("Failed to complete booking");
     return res.json();

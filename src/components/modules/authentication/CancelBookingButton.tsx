@@ -5,6 +5,8 @@ import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
 import { useRouter } from "next/navigation";
 
+import { bookingService } from "@/services/booking.service";
+
 interface Props {
   bookingId: string;
 }
@@ -12,17 +14,12 @@ interface Props {
 export default function CancelBookingButton({ bookingId }: Props) {
   const [loading, setLoading] = useState(false);
   const router = useRouter();
-  const API_BASE = process.env.NEXT_PUBLIC_API_URL;
 
   async function handleCancel() {
     setLoading(true);
     const toastId = toast.loading("Cancelling booking...");
     try {
-      const res = await fetch(`${API_BASE}/api/bookings/${bookingId}/cancel`, {
-        method: "PATCH",
-        credentials: "include",
-      });
-      if (!res.ok) throw new Error("Failed");
+      await bookingService.cancelMyBooking(bookingId);
       toast.success("Booking cancelled", { id: toastId });
       router.refresh();
     } catch {

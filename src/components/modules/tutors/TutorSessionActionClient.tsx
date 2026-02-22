@@ -6,6 +6,8 @@ import { Button } from "@/components/ui/button";
 import { useRouter } from "next/navigation";
 import { CheckCircle2 } from "lucide-react";
 
+import { bookingService } from "@/services/booking.service";
+
 interface Props {
   bookingId: string;
 }
@@ -19,14 +21,7 @@ export default function TutorSessionActionClient({ bookingId }: Props) {
     const toastId = toast.loading("Marking session as complete...");
 
     try {
-      const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/bookings/${bookingId}/complete`, {
-        method: "PATCH",
-        credentials: "include", // Ensure session is sent
-      });
-
-      if (!response.ok) {
-        throw new Error("Failed to complete session");
-      }
+      await bookingService.completeSession(bookingId);
 
       toast.success("Session completed!", { id: toastId });
       router.refresh(); // Refresh server component data

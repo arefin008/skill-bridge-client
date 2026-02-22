@@ -9,12 +9,8 @@ export const tutorService = {
     filters?: TutorFilter,
     options?: FetchOptions,
   ): Promise<{ data: Tutor[] }> {
-    // Make sure API base is defined
+    const isServer = typeof window === "undefined";
     const API_BASE = process.env.NEXT_PUBLIC_API_URL;
-    if (!API_BASE) {
-      console.error("NEXT_PUBLIC_API_URL is not defined");
-      return { data: [] };
-    }
 
     // Build query string from filters
     const query = filters
@@ -28,9 +24,20 @@ export const tutorService = {
         ).toString()}`
       : "";
 
+    let url = `/api/tutors${query}`;
+    let headers: Record<string, string> = {};
+
+    if (isServer) {
+      if (!API_BASE) {
+        console.error("NEXT_PUBLIC_API_URL is not defined");
+        return { data: [] };
+      }
+      url = `${API_BASE}/api/tutors${query}`;
+    }
+
     try {
-      // Use absolute URL for server-side fetch
-      const res = await fetch(`${API_BASE}/api/tutors${query}`, {
+      const res = await fetch(url, {
+        headers,
         cache: "no-store",
       });
 
@@ -56,10 +63,19 @@ export const tutorService = {
   },
 
   async getById(id: string): Promise<Tutor | null> {
+    const isServer = typeof window === "undefined";
     const API_BASE = process.env.NEXT_PUBLIC_API_URL;
-    if (!API_BASE) throw new Error("API base URL is not defined");
 
-    const res = await fetch(`${API_BASE}/api/tutors/${id}`, {
+    let url = `/api/tutors/${id}`;
+    let headers: Record<string, string> = {};
+
+    if (isServer) {
+      if (!API_BASE) throw new Error("API base URL is not defined");
+      url = `${API_BASE}/api/tutors/${id}`;
+    }
+
+    const res = await fetch(url, {
+      headers,
       cache: "no-store",
     });
     if (res.status === 404) return null;
@@ -73,18 +89,25 @@ export const tutorService = {
   },
 
   async createProfile(data: TutorProfileData): Promise<Tutor> {
+    const isServer = typeof window === "undefined";
     const API_BASE = process.env.NEXT_PUBLIC_API_URL;
-    if (!API_BASE) throw new Error("API base URL is not defined");
 
-    const { cookies } = await import("next/headers");
-    const cookieStore = await cookies();
+    let url = `/api/tutors`;
+    let headers: Record<string, string> = {
+      "Content-Type": "application/json",
+    };
 
-    const res = await fetch(`${API_BASE}/api/tutors`, {
+    if (isServer) {
+      if (!API_BASE) throw new Error("API base URL is not defined");
+      url = `${API_BASE}/api/tutors`;
+      const { cookies } = await import("next/headers");
+      const cookieStore = await cookies();
+      headers["Cookie"] = cookieStore.toString();
+    }
+
+    const res = await fetch(url, {
       method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        Cookie: cookieStore.toString(),
-      },
+      headers,
       body: JSON.stringify(data),
     });
 
@@ -100,18 +123,25 @@ export const tutorService = {
    *  Update tutor profile
    */
   async updateProfile(data: Partial<TutorProfileData>): Promise<Tutor> {
+    const isServer = typeof window === "undefined";
     const API_BASE = process.env.NEXT_PUBLIC_API_URL;
-    if (!API_BASE) throw new Error("API base URL is not defined");
 
-    const { cookies } = await import("next/headers");
-    const cookieStore = await cookies();
+    let url = `/api/tutors/profile`;
+    let headers: Record<string, string> = {
+      "Content-Type": "application/json",
+    };
 
-    const res = await fetch(`${API_BASE}/api/tutors/profile`, {
+    if (isServer) {
+      if (!API_BASE) throw new Error("API base URL is not defined");
+      url = `${API_BASE}/api/tutors/profile`;
+      const { cookies } = await import("next/headers");
+      const cookieStore = await cookies();
+      headers["Cookie"] = cookieStore.toString();
+    }
+
+    const res = await fetch(url, {
       method: "PUT",
-      headers: {
-        "Content-Type": "application/json",
-        Cookie: cookieStore.toString(),
-      },
+      headers,
       body: JSON.stringify(data),
     });
 
@@ -124,19 +154,23 @@ export const tutorService = {
   },
 
   async getMyProfile(): Promise<{ data: Tutor | null }> {
+    const isServer = typeof window === "undefined";
     const API_BASE = process.env.NEXT_PUBLIC_API_URL;
-    if (!API_BASE) throw new Error("API base URL is not defined");
 
-    try {
-      // Import cookies only on server side
+    let url = `/api/tutors/my-profile`;
+    let headers: Record<string, string> = {};
+
+    if (isServer) {
+      if (!API_BASE) throw new Error("API base URL is not defined");
+      url = `${API_BASE}/api/tutors/my-profile`;
       const { cookies } = await import("next/headers");
       const cookieStore = await cookies();
-      const sessionCookie = cookieStore.get("next-auth.session-token");
+      headers["Cookie"] = cookieStore.toString();
+    }
 
-      const res = await fetch(`${API_BASE}/api/tutors/my-profile`, {
-        headers: {
-          Cookie: cookieStore.toString(),
-        },
+    try {
+      const res = await fetch(url, {
+        headers,
         cache: "no-store",
         next: { tags: ["tutorProfiles"] },
       });

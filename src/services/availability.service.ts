@@ -1,12 +1,26 @@
 import { TutorAvailability } from "@/types";
 
-const API_BASE = process.env.NEXT_PUBLIC_API_URL;
-
 export const availabilityService = {
   async create(data: Partial<TutorAvailability>) {
-    const res = await fetch(`${API_BASE}/api/availability`, {
+    const isServer = typeof window === "undefined";
+    const API_BASE = process.env.NEXT_PUBLIC_API_URL;
+
+    let url = `/api/availability`;
+    let headers: Record<string, string> = {
+      "Content-Type": "application/json",
+    };
+
+    if (isServer) {
+      if (!API_BASE) throw new Error("API base URL is not defined");
+      url = `${API_BASE}/api/availability`;
+      const { cookies } = await import("next/headers");
+      const cookieStore = await cookies();
+      headers["Cookie"] = cookieStore.toString();
+    }
+
+    const res = await fetch(url, {
       method: "POST",
-      headers: { "Content-Type": "application/json" },
+      headers,
       body: JSON.stringify(data),
     });
     if (!res.ok) throw new Error("Failed to create availability");
@@ -14,7 +28,22 @@ export const availabilityService = {
   },
 
   async getMyAvailability(): Promise<{ data: TutorAvailability[] }> {
-    const res = await fetch(`${API_BASE}/api/availability`, {
+    const isServer = typeof window === "undefined";
+    const API_BASE = process.env.NEXT_PUBLIC_API_URL;
+
+    let url = "/api/availability";
+    let headers: Record<string, string> = {};
+
+    if (isServer) {
+      if (!API_BASE) throw new Error("API base URL is not defined");
+      url = `${API_BASE}/api/availability`;
+      const { cookies } = await import("next/headers");
+      const cookieStore = await cookies();
+      headers["Cookie"] = cookieStore.toString();
+    }
+
+    const res = await fetch(url, {
+      headers,
       cache: "no-store",
     });
     if (!res.ok) throw new Error("Failed to fetch availability");
@@ -23,7 +52,7 @@ export const availabilityService = {
   },
 
   async delete(id: string) {
-    const res = await fetch(`${API_BASE}/api/availability/${id}`, {
+    const res = await fetch(`/api/availability/${id}`, {
       method: "DELETE",
     });
     if (!res.ok) throw new Error("Failed to delete availability");

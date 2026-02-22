@@ -4,23 +4,50 @@ const API_BASE = process.env.NEXT_PUBLIC_API_URL;
 
 export const bookingService = {
   async create(data: Partial<Booking>) {
-    const res = await fetch(`${API_BASE}/api/bookings`, {
+    const isServer = typeof window === "undefined";
+
+    let url = `/api/bookings`;
+    let headers: Record<string, string> = {
+      "Content-Type": "application/json",
+    };
+
+    if (isServer) {
+      if (!API_BASE) throw new Error("API base URL is not defined");
+      url = `${API_BASE}/api/bookings`;
+      const { cookies } = await import("next/headers");
+      const cookieStore = await cookies();
+      headers["Cookie"] = cookieStore.toString();
+    }
+
+    const res = await fetch(url, {
       method: "POST",
-      headers: { "Content-Type": "application/json" },
+      headers,
       body: JSON.stringify(data),
     });
-    if (!res.ok) throw new Error("Failed to create booking");
+    if (!res.ok) {
+      const errorData = await res.json().catch(() => ({}));
+      throw new Error(errorData.message || errorData.error || "Failed to create booking");
+    }
     return res.json();
   },
 
   async getAll(): Promise<{ data: Booking[] }> {
-    const { cookies } = await import("next/headers");
-    const cookieStore = await cookies();
-    const res = await fetch(`${API_BASE}/api/bookings`, { 
+    const isServer = typeof window === "undefined";
+
+    let url = `/api/bookings`;
+    let headers: Record<string, string> = {};
+
+    if (isServer) {
+      if (!API_BASE) throw new Error("API base URL is not defined");
+      url = `${API_BASE}/api/bookings`;
+      const { cookies } = await import("next/headers");
+      const cookieStore = await cookies();
+      headers["Cookie"] = cookieStore.toString();
+    }
+
+    const res = await fetch(url, {
+      headers,
       cache: "no-store",
-      headers: {
-        Cookie: cookieStore.toString(),
-      },
     });
     if (!res.ok) throw new Error("Failed to fetch all bookings");
     const data = await res.json();
@@ -28,13 +55,22 @@ export const bookingService = {
   },
 
   async getMyBookings(): Promise<{ data: Booking[] }> {
-    const { cookies } = await import("next/headers");
-    const cookieStore = await cookies();
-    const res = await fetch(`${API_BASE}/api/bookings/me`, {
+    const isServer = typeof window === "undefined";
+
+    let url = `/api/bookings/me`;
+    let headers: Record<string, string> = {};
+
+    if (isServer) {
+      if (!API_BASE) throw new Error("API base URL is not defined");
+      url = `${API_BASE}/api/bookings/me`;
+      const { cookies } = await import("next/headers");
+      const cookieStore = await cookies();
+      headers["Cookie"] = cookieStore.toString();
+    }
+
+    const res = await fetch(url, {
+      headers,
       cache: "no-store",
-      headers: {
-        Cookie: cookieStore.toString(),
-      },
     });
     if (!res.ok) throw new Error("Failed to fetch my bookings");
     const data = await res.json();
@@ -50,13 +86,22 @@ export const bookingService = {
   },
 
   async getTutorSessions(): Promise<{ data: Booking[] }> {
-    const { cookies } = await import("next/headers");
-    const cookieStore = await cookies();
-    const res = await fetch(`${API_BASE}/api/bookings/tutor/me`, {
+    const isServer = typeof window === "undefined";
+
+    let url = `/api/bookings/tutor/me`;
+    let headers: Record<string, string> = {};
+
+    if (isServer) {
+      if (!API_BASE) throw new Error("API base URL is not defined");
+      url = `${API_BASE}/api/bookings/tutor/me`;
+      const { cookies } = await import("next/headers");
+      const cookieStore = await cookies();
+      headers["Cookie"] = cookieStore.toString();
+    }
+
+    const res = await fetch(url, {
+      headers,
       cache: "no-store",
-      headers: {
-        Cookie: cookieStore.toString(),
-      },
     });
     if (!res.ok) throw new Error("Failed to fetch tutor sessions");
     const data = await res.json();

@@ -4,17 +4,22 @@ const API_BASE = process.env.NEXT_PUBLIC_API_URL;
 
 export const adminService = {
   async getAllUsers(page: number = 1, limit: number = 10): Promise<{ data: User[], meta: any }> {
-    const { cookies } = await import("next/headers");
-    const cookieStore = await cookies();
+    const isServer = typeof window === "undefined";
 
-    const url = new URL(`${API_BASE}/api/admin/users`);
-    url.searchParams.append("page", page.toString());
-    url.searchParams.append("limit", limit.toString());
+    const urlPath = `/api/admin/users?page=${page}&limit=${limit}`;
+    let url = urlPath;
+    let headers: Record<string, string> = {};
 
-    const res = await fetch(url.toString(), {
-      headers: {
-        Cookie: cookieStore.toString(),
-      },
+    if (isServer) {
+      if (!API_BASE) throw new Error("API base URL is not defined");
+      url = `${API_BASE}${urlPath}`;
+      const { cookies } = await import("next/headers");
+      const cookieStore = await cookies();
+      headers["Cookie"] = cookieStore.toString();
+    }
+
+    const res = await fetch(url, {
+      headers,
       cache: "no-store",
     });
     if (!res.ok) throw new Error("Failed to fetch users");
@@ -23,15 +28,24 @@ export const adminService = {
   },
 
   async updateUserStatus(id: string, status: string): Promise<User> {
-    const { cookies } = await import("next/headers");
-    const cookieStore = await cookies();
+    const isServer = typeof window === "undefined";
 
-    const res = await fetch(`${API_BASE}/api/admin/users/${id}`, {
+    let url = `/api/admin/users/${id}`;
+    let headers: Record<string, string> = {
+      "Content-Type": "application/json",
+    };
+
+    if (isServer) {
+      if (!API_BASE) throw new Error("API base URL is not defined");
+      url = `${API_BASE}/api/admin/users/${id}`;
+      const { cookies } = await import("next/headers");
+      const cookieStore = await cookies();
+      headers["Cookie"] = cookieStore.toString();
+    }
+
+    const res = await fetch(url, {
       method: "PATCH",
-      headers: {
-        "Content-Type": "application/json",
-        Cookie: cookieStore.toString(),
-      },
+      headers,
       body: JSON.stringify({ status }),
     });
     if (!res.ok) throw new Error("Failed to update user status");

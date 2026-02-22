@@ -29,14 +29,13 @@ export default function AvailabilityManagerClient({ existingSlots }: Props) {
   const [startTime, setStartTime] = useState("09:00");
   const [endTime, setEndTime] = useState("11:00");
   const [loading, setLoading] = useState(false);
-  const API_BASE = process.env.NEXT_PUBLIC_API_URL;
 
   async function handleAdd() {
     if (!startTime || !endTime) return;
     setLoading(true);
     const toastId = toast.loading("Adding slot...");
     try {
-      const res = await fetch(`${API_BASE}/api/availability`, {
+      const res = await fetch(`/api/availability`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         credentials: "include",
@@ -55,7 +54,7 @@ export default function AvailabilityManagerClient({ existingSlots }: Props) {
   async function handleDelete(id: string) {
     const toastId = toast.loading("Deleting slot...");
     try {
-      const res = await fetch(`${API_BASE}/api/availability/${id}`, {
+      const res = await fetch(`/api/availability/${id}`, {
         method: "DELETE",
         credentials: "include",
       });

@@ -29,6 +29,7 @@ export const adminService = {
 
   async updateUserStatus(id: string, status: string): Promise<User> {
     const isServer = typeof window === "undefined";
+    const API_BASE = process.env.NEXT_PUBLIC_API_URL;
 
     let url = `/api/admin/users/${id}`;
     let headers: Record<string, string> = {
@@ -48,7 +49,13 @@ export const adminService = {
       headers,
       body: JSON.stringify({ status }),
     });
-    if (!res.ok) throw new Error("Failed to update user status");
+
+    if (!res.ok) {
+      const errorData = await res.json().catch(() => ({}));
+      throw new Error(
+        errorData.message || errorData.error || "Failed to update user status",
+      );
+    }
     return res.json();
   },
 };

@@ -8,6 +8,7 @@ import { Input } from "@/components/ui/input";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Category } from "@/types";
 import { Plus } from "lucide-react";
+import { categoryService } from "@/services/category.service";
 
 interface Props {
   categories: (Category & { isActive?: boolean })[];
@@ -17,25 +18,17 @@ export default function AdminCategoryManager({ categories }: Props) {
   const router = useRouter();
   const [name, setName] = useState("");
   const [loading, setLoading] = useState(false);
-  const API_BASE = process.env.NEXT_PUBLIC_API_URL;
-
   async function handleCreate() {
     if (!name.trim()) return;
     setLoading(true);
     const toastId = toast.loading("Creating category...");
     try {
-      const res = await fetch(`${API_BASE}/api/categories`, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        credentials: "include",
-        body: JSON.stringify({ name: name.trim() }),
-      });
-      if (!res.ok) throw new Error("Failed");
+      await categoryService.createCategory(name.trim());
       toast.success("Category created!", { id: toastId });
       setName("");
       router.refresh();
-    } catch {
-      toast.error("Failed to create category", { id: toastId });
+    } catch (error: any) {
+      toast.error(error.message || "Failed to create category", { id: toastId });
     } finally {
       setLoading(false);
     }
@@ -46,19 +39,13 @@ export default function AdminCategoryManager({ categories }: Props) {
       isActive ? "Deactivating..." : "Activating...",
     );
     try {
-      const res = await fetch(`${API_BASE}/api/categories/${id}`, {
-        method: "PATCH",
-        headers: { "Content-Type": "application/json" },
-        credentials: "include",
-        body: JSON.stringify({ isActive: !isActive }),
-      });
-      if (!res.ok) throw new Error("Failed");
+      await categoryService.updateCategory(id, { isActive: !isActive });
       toast.success(isActive ? "Category deactivated" : "Category activated", {
         id: toastId,
       });
       router.refresh();
-    } catch {
-      toast.error("Failed to update category", { id: toastId });
+    } catch (error: any) {
+      toast.error(error.message || "Failed to update category", { id: toastId });
     }
   }
 

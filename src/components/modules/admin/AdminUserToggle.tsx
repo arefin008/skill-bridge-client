@@ -4,6 +4,7 @@ import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
+import { adminService } from "@/services/admin.service";
 
 interface Props {
   userId: string;
@@ -13,10 +14,8 @@ interface Props {
 export default function AdminUserToggle({ userId, currentStatus }: Props) {
   const [loading, setLoading] = useState(false);
   const router = useRouter();
-  const API_BASE = process.env.NEXT_PUBLIC_API_URL;
 
   const isBanned = currentStatus === "BANNED";
-
   async function handleToggle() {
     const newStatus = isBanned ? "ACTIVE" : "BANNED";
     setLoading(true);
@@ -24,19 +23,13 @@ export default function AdminUserToggle({ userId, currentStatus }: Props) {
       isBanned ? "Unbanning user..." : "Banning user...",
     );
     try {
-      const res = await fetch(`${API_BASE}/api/admin/users/${userId}`, {
-        method: "PATCH",
-        headers: { "Content-Type": "application/json" },
-        credentials: "include",
-        body: JSON.stringify({ status: newStatus }),
-      });
-      if (!res.ok) throw new Error("Failed");
+      await adminService.updateUserStatus(userId, newStatus);
       toast.success(isBanned ? "User unbanned" : "User banned", {
         id: toastId,
       });
       router.refresh();
-    } catch {
-      toast.error("Failed to update user status", { id: toastId });
+    } catch (error: any) {
+      toast.error(error.message || "Failed to update user status", { id: toastId });
     } finally {
       setLoading(false);
     }

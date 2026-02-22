@@ -61,7 +61,17 @@ export function LoginForm({ ...props }: React.ComponentProps<typeof Card>) {
           return;
         }
 
-        const role = (session?.user as any)?.role || null;
+        const user = session?.user as any;
+        const status = user?.status || "ACTIVE";
+
+        if (status === "BANNED") {
+          await authClient.signOut();
+          toast.error("Your account has been suspended.", { id: toastId });
+          router.replace("/login?error=banned");
+          return;
+        }
+
+        const role = user?.role || null;
 
         if (!role) {
           toast.success("Logged in successfully. Redirecting...", { id: toastId });

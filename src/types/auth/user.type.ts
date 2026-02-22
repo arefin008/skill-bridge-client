@@ -7,4 +7,5 @@ export interface User {
   updatedAt: Date;
   emailVerified: boolean;
   image?: string | null;
+  status?: string;
 }
